@@ -1,1288 +1,913 @@
-﻿<#
-	.SYNOPSIS
-	Default preset file for "Windows 10 Sophia Script"
-
-	Version: v5.2
-	Date: 11.11.2020
-	Copyright (c) 2020 farag & oZ-Zo
-
-	Thanks to all http://forum.ru-board.com members involved
-
-	.DESCRIPTION
-	Supported Windows 10 versions: 2004 (20H1)/2009 (20H2), 19041/19042, Home/Pro/Enterprise, x64
-
-	Due to the fact that the script includes more than 270 functions, you must read the entire preset file carefully
-	and comment out/uncomment those functions that you do/do not want to be executed
-	Every tweak in a preset file has its' corresponding function to restore the default settings
-
-	Running the script is best done on a fresh install because running it on wrong tweaked system may result in errors occurring
-
-	PowerShell must be run with elevated privileges
-	Set execution policy to be able to run scripts only in the current PowerShell session:
-		Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process -Force
-
-	.EXAMPLE
-	PS C:\> .\Sophia.ps1
-
-	.NOTES
-	http://forum.ru-board.com/topic.cgi?forum=62&topic=30617#15
-	https://habr.com/en/post/521202/
-	https://forums.mydigitallife.net/threads/powershell-script-setup-windows-10.81675/
-	https://www.reddit.com/r/PowerShell/comments/go2n5v/powershell_script_setup_windows_10/
-
-	.LINK
-	https://github.com/farag2/Windows-10-Sophia-Script
-#>
-
-#Requires -RunAsAdministrator
-#Requires -Version 5.1
-
-Clear-Host
-
-Remove-Module -Name Sophia -Force -ErrorAction Ignore
-Import-Module -Name $PSScriptRoot\Sophia.psd1 -PassThru -Force
-
-Import-LocalizedData -BindingVariable Global:Localization -FileName Sophia
-
-# Checking
-# Проверка
-Check
-
-# Create a restore point
-# Создать точку восстановления
-CreateRestorePoint
-
-#region Privacy & Telemetry
-# Disable the "Connected User Experiences and Telemetry" service
-# Отключить службу "Функциональные возможности для подключенных пользователей и телеметрия"
-TelemetryService -Disable
-
-# Enable the "Connected User Experiences and Telemetry" service (default value)
-# Включить службу "Функциональные возможности для подключенных пользователей и телеметрия" (значение по умолчанию)
-# TelemetryService -Enable
-
-# Set the OS level of diagnostic data gathering to minimum
-# Установить уровень сбора диагностических сведений ОС на минимальный
-DiagnosticDataLevel -Minimal
-
-# Set the default OS level of diagnostic data gathering
-# Установить уровень сбора диагностических сведений ОС по умолчанию
-# DiagnosticDataLevel -Default
-
-# Turn off Windows Error Reporting for the current user
-# Отключить отчеты об ошибках Windows для текущего пользователя
-ErrorReporting -Disable
-
-# Turn on Windows Error Reporting for the current user (default value)
-# Включить отчеты об ошибках Windows для текущего пользователя (значение по умолчанию)
-# ErrorReporting -Enable
-
-# Change Windows feedback frequency to "Never" for the current user
-# Изменить частоту формирования отзывов на "Никогда" для текущего пользователя
-WindowsFeedback -Disable
-
-# Change Windows Feedback frequency to "Automatically" for the current user (default value)
-# Изменить частоту формирования отзывов на "Автоматически" для текущего пользователя (значение по умолчанию)
-# WindowsFeedback -Enable
-
-# Turn off diagnostics tracking scheduled tasks
-# Отключить задачи диагностического отслеживания
-ScheduledTasks -Disable
-
-# Turn on diagnostics tracking scheduled tasks (default value)
-# Включить задачи диагностического отслеживания (значение по умолчанию)
-# ScheduledTasks -Enable
-
-# Do not use sign-in info to automatically finish setting up device and reopen apps after an update or restart (current user only)
-# Не использовать данные для входа для автоматического завершения настройки устройства и открытия приложений после перезапуска или обновления (только для текущего пользователя)
-SigninInfo -Disable
-
-# Use sign-in info to automatically finish setting up device and reopen apps after an update or restart (current user only) (default value)
-# Использовать данные для входа для автоматического завершения настройки устройства и открытия приложений после перезапуска или обновления (только для текущего пользователя) (значение по умолчанию)
-# SigninInfo -Enable
-
-# Do not let websites provide locally relevant content by accessing language list (current user only)
-# Не позволять веб-сайтам предоставлять местную информацию за счет доступа к списку языков (только для текущего пользователя)
-LanguageListAccess -Disable
-
-# Let websites provide locally relevant content by accessing language list (current user only) (default value)
-# Позволять веб-сайтам предоставлять местную информацию за счет доступа к списку языков (только для текущего пользователя) (значение по умолчанию)
-# LanguageListAccess -Enable
-
-# Do not allow apps to use advertising ID (current user only)
-# Не разрешать приложениям использовать идентификатор рекламы (только для текущего пользователя)
-AdvertisingID -Disable
-
-# Allow apps to use advertising ID (current user only) (default value)
-# Разрешать приложениям использовать идентификатор рекламы (только для текущего пользователя) (значение по умолчанию)
-# AdvertisingID -Enable
-
-# Do not let apps on other devices open and message apps on this device, and vice versa (current user only)
-# Не разрешать приложениям на других устройствах запускать приложения и отправлять сообщения на этом устройстве и наоборот (только для текущего пользователя)
-ShareAcrossDevices -Disable
-
-# Let apps on other devices open and message apps on this device, and vice versa (current user only) (default value)
-# Разрешать приложениям на других устройствах запускать приложения и отправлять сообщения на этом устройстве и наоборот (только для текущего пользователя) (значение по умолчанию)
-# ShareAcrossDevices -Enable
-
-# Hide the Windows welcome experiences after updates and occasionally when I sign in to highlight what's new and suggested (current user only)
-# Скрывать экран приветствия Windows после обновлений и иногда при входе, чтобы сообщить о новых функциях и предложениях (только для текущего пользователя)
-WindowsWelcomeExperience -Hide
-
-# Show the Windows welcome experiences after updates and occasionally when I sign in to highlight what's new and suggested (current user only) (default value)
-# Показывать экран приветствия Windows после обновлений и иногда при входе, чтобы сообщить о новых функциях и предложениях (только для текущего пользователя) (значение по умолчанию)
-# WindowsWelcomeExperience -Show
-
-# Get tip, trick, and suggestions as you use Windows (current user only) (default value)
-# Получать советы, подсказки и рекомендации при использованию Windows (только для текущего пользователя) (значение по умолчанию)
-WindowsTips -Enable
-
-# Do not get tip, trick, and suggestions as you use Windows (current user only)
-# Не получать советы, подсказки и рекомендации при использованию Windows (только для текущего пользователя)
-# WindowsTips -Disable
-
-# Hide suggested content in the Settings app (current user only)
-# Скрывать рекомендуемое содержимое в приложении "Параметры" (только для текущего пользователя)
-SettingsSuggestedContent -Hide
-
-# Show suggested content in the Settings app (current user only) (default value)
-# Показывать рекомендуемое содержимое в приложении "Параметры" (только для текущего пользователя) (значение по умолчанию)
-# SettingsSuggestedContent -Show
-
-# Turn off automatic installing suggested apps (current user only)
-# Отключить автоматическую установку рекомендованных приложений (только для текущего пользователя)
-AppsSilentInstalling -Disable
-
-# Turn on automatic installing suggested apps (current user only) (default value)
-# Включить автоматическую установку рекомендованных приложений (только для текущего пользователя) (значение по умолчанию)
-# AppsSilentInstalling -Enable
-
-# Do not suggest ways I can finish setting up my device to get the most out of Windows (current user only)
-# Не предлагать способы завершения настройки устройства для максимально эффективного использования Windows (только для текущего пользователя)
-WhatsNewInWindows -Disable
-
-# Suggest ways I can finish setting up my device to get the most out of Windows (default value)
-# Предлагать способы завершения настройки устройства для максимально эффективного использования Windows (значение по умолчанию)
-# WhatsNewInWindows -Enable
-
-# Do not offer tailored experiences based on the diagnostic data setting (current user only)
-# Не предлагать персонализированные возможности, основанные на выбранном параметре диагностических данных (только для текущего пользователя)
-TailoredExperiences -Disable
-
-# Offer tailored experiences based on the diagnostic data setting (default value)
-# Предлагать персонализированные возможности, основанные на выбранном параметре диагностических данных (значение по умолчанию)
-# TailoredExperiences -Enable
-
-# Disable Bing search in the Start Menu
-# Отключить в меню "Пуск" поиск через Bing
-BingSearch -Disable
-
-# Enable Bing search in the Start Menu (current user only) (default value)
-# Включить поиск через Bing в меню "Пуск" (только для текущего пользователя) (значение по умолчанию)
-# BingSearch -Enable
-#endregion Privacy & Telemetry
-
-#region UI & Personalization
-# Show "This PC" on Desktop (current user only)
-# Отобразить "Этот компьютер" на рабочем столе (только для текущего пользователя)
-ThisPC -Show
-
-# Hide "This PC" on Desktop (current user only) (default value)
-# Скрывать "Этот компьютер" на рабочем столе (только для текущего пользователя) (значение по умолчанию)
-# ThisPC -Hide
-
-# Do not use check boxes to select items (current user only)
-# Не использовать флажки для выбора элементов (только для текущего пользователя)
-CheckBoxes -Disable
-
-# Use check boxes to select items (current user only) (default value)
-# Использовать флажки для выбора элементов (только для текущего пользователя) (значение по умолчанию)
-# CheckBoxes -Enable
-
-# Show hidden files, folders, and drives (current user only)
-# Отображать скрытые файлы, папки и диски (только для текущего пользователя)
-HiddenItems -Enable
-
-# Do not show hidden files, folders, and drives (current user only) (default value)
-# Не отображать скрытые файлы, папки и диски (только для текущего пользователя) (значение по умолчанию)
-# HiddenItems -Disable
-
-# Show file name extensions (current user only)
-# Отображать расширения имён файлов (только для текущего пользователя)
-FileExtensions -Show
-
-# Hide file name extensions (current user only) (default value)
-# Скрывать расширения имён файлов файлов (только для текущего пользователя) (значение по умолчанию)
-# FileExtensions -Hide
-
-# Do not hide folder merge conflicts (current user only)
-# Не скрывать конфликт слияния папок (только для текущего пользователя)
-MergeConflicts -Show
-
-# Hide folder merge conflicts (current user only) (default value)
-# Скрывать конфликт слияния папок (только для текущего пользователя) (значение по умолчанию)
-# MergeConflicts -Hide
-
-# Open File Explorer to: "This PC" (current user only)
-# Открывать проводник для: "Этот компьютер" (только для текущего пользователя)
-OpenFileExplorerTo -ThisPC
-
-# Open File Explorer to: "Quick access" (current user only) (default value)
-# Открывать проводник для: "Быстрый доступ" (только для текущего пользователя) (значение по умолчанию)
-# OpenFileExplorerTo -QuickAccess
-
-# Hide Cortana button on the taskbar (current user only)
-# Скрывать кнопку Кортаны на панели задач (только для текущего пользователя)
-CortanaButton -Hide
-
-# Show Cortana button on the taskbar (current user only) (default value)
-# Показать кнопку Кортаны на панели задач (только для текущего пользователя) (значение по умолчанию)
-# CortanaButton -Show
-
-# Do not show sync provider notification within File Explorer (current user only)
-# Не показывать уведомления поставщика синхронизации в проводнике (только для текущего пользователя)
-OneDriveFileExplorerAd -Hide
-
-# Show sync provider notification within File Explorer (current user only) (default value)
-# Показывать уведомления поставщика синхронизации в проводнике (только для текущего пользователя) (значение по умолчанию)
-# OneDriveFileExplorerAd -Show
-
-# Hide Task View button on the taskbar (current user only)
-# Скрывать кнопку Просмотра задач (только для текущего пользователя)
-TaskViewButton -Hide
-
-# Show Task View button on the taskbar (current user only) (default value)
-# Показывать кнопку Просмотра задач (только для текущего пользователя) (значение по умолчанию)
-# TaskViewButton -Show
-
-# Hide People button on the taskbar (current user only)
-# Скрывать панель "Люди" на панели задач (только для текущего пользователя)
-PeopleTaskbar -Hide
-
-# Show People button on the taskbar (current user only) (default value)
-# Показывать панель "Люди" на панели задач (только для текущего пользователя) (значение по умолчанию)
-# PeopleTaskbar -Show
-
-# Show seconds on the taskbar clock (current user only)
-# Отображать секунды в системных часах на панели задач (только для текущего пользователя)
-SecondsInSystemClock -Show
-
-# Hide seconds on the taskbar clock (current user only) (default value)
-# Скрывать секунды в системных часах на панели задач (только для текущего пользователя) (значение по умолчанию)
-# SecondsInSystemClock -Hide
-
-# When I snap a window, do not show what I can snap next to it (current user only)
-# При прикреплении окна не показывать, что можно прикрепить рядом с ним (только для текущего пользователя)
-SnapAssist -Disable
-
-# When I snap a window, show what I can snap next to it (current user only) (default value)
-# При прикреплении окна не показывать/показывать, что можно прикрепить рядом с ним (только для текущего пользователя) (значение по умолчанию)
-# SnapAssist -Enable
-
-# Always open the file transfer dialog box in the detailed mode (current user only)
-# Всегда открывать диалоговое окно передачи файлов в развернутом виде (только для текущего пользователя)
-FileTransferDialog -Detailed
-
-# Always open the file transfer dialog box in the compact mode (current user only) (default value)
-# Всегда открывать диалоговое окно передачи файлов в свернутом виде (только для текущего пользователя) (значение по умолчанию)
-# FileTransferDialog -Compact
-
-# Always expand the ribbon in the File Explorer (current user only)
-# Всегда разворачивать ленту в проводнике (только для текущего пользователя)
-FileExplorerRibbon -Expanded
-
-# Always minimize the ribbon in the File Explorer (current user only) (default value)
-# Не отображать ленту проводника в развернутом виде (только для текущего пользователя) (значение по умолчанию)
-# FileExplorerRibbon -Minimized
-
-# Display recycle bin files delete confirmation
-# Запрашивать подтверждение на удаление файлов в корзину
-RecycleBinDeleteConfirmation -Enable
-
-# Do not display recycle bin files delete confirmation (default value)
-# Не запрашивать подтверждение на удаление файлов в корзину (значение по умолчанию)
-# RecycleBinDeleteConfirmation -Disable
-
-# Hide the "3D Objects" folder in "This PC" and "Quick access" (current user only)
-# Скрыть папку "Объемные объекты" в "Этот компьютер" и панели быстрого доступа (только для текущего пользователя)
-3DObjects -Hide
-
-# Show the "3D Objects" folder in "This PC" and "Quick access" (current user only) (default value)
-# Отобразить папку "Объемные объекты" в "Этот компьютер" и панели быстрого доступа (только для текущего пользователя) (значение по умолчанию)
-# 3DObjects -Show
-
-# Hide frequently used folders in "Quick access" (current user only)
-# Скрыть недавно используемые папки на панели быстрого доступа (только для текущего пользователя)
-QuickAccessFrequentFolders -Hide
-
-# Show frequently used folders in "Quick access" (current user only) (default value)
-# Показывать недавно используемые папки на панели быстрого доступа (только для текущего пользователя) (значение по умолчанию)
-# QuickAccessFrequentFolders -Show
-
-# Do not show recently used files in Quick access (current user only)
-# Не показывать недавно использовавшиеся файлы на панели быстрого доступа (только для текущего пользователя)
-QuickAccessRecentFiles -Hide
-
-# Show recently used files in Quick access (current user only) (default value)
-# Показывать недавно использовавшиеся файлы на панели быстрого доступа (только для текущего пользователя) (значение по умолчанию)
-# QuickAccessRecentFiles -Show
-
-# Hide the search box or the search icon from the taskbar (current user only)
-# Скрыть поле или значок поиска на панели задач (только для текущего пользователя)
-TaskbarSearch -Hide
-
-# Show the search box on the taskbar (current user only)
-# Показать поле поиска на панели задач (только для текущего пользователя)
-# TaskbarSearch -SearchIcon
-
-# Show the search icon on the taskbar (current user only) (default value)
-# Показать поле поиска на панели задач (только для текущего пользователя) (значение по умолчанию)
-# TaskbarSearch -SearchBox
-
-# Do not show the "Windows Ink Workspace" button on the taskbar (current user only)
-# Не показывать кнопку Windows Ink Workspace на панели задач (current user only)
-WindowsInkWorkspace -Hide
-
-# Show the "Windows Ink Workspace" button in taskbar (current user only) (default value)
-# Показывать кнопку Windows Ink Workspace на панели задач (current user only) (значение по умолчанию)
-# WindowsInkWorkspace -Show
-
-# Always show all icons in the notification area (current user only)
-# Всегда отображать все значки в области уведомлений (только для текущего пользователя)
-TrayIcons -Show
-
-# Do not show all icons in the notification area (current user only) (default value)
-# Не отображать все значки в области уведомлений (только для текущего пользователя) (значение по умолчанию)
-# TrayIcons -Hide
-
-# Unpin "Microsoft Edge" and "Microsoft Store" from the taskbar (current user only)
-# Открепить Microsoft Edge и Microsoft Store от панели задач (только для текущего пользователя)
-UnpinTaskbarEdgeStore
-
-# View the Control Panel icons by: large icons (current user only)
-# Просмотр иконок Панели управления как: крупные значки (только для текущего пользователя)
-ControlPanelView -LargeIcons
-
-# View the Control Panel icons by: category (current user only) (default value)
-# Просмотр значки Панели управления как "категория" (только для текущего пользователя) (значение по умолчанию)
-# ControlPanelView -Category
-
-# Set the Windows mode color scheme to the dark (current user only)
-# Установить цвет режима Windows по умолчанию на темный (только для текущего пользователя)
-WindowsColorScheme -Dark
-
-# Set the Windows mode color scheme to the light (current user only)
-# Установить режим цвета для Windows на светлый (только для текущего пользователя)
-# WindowsColorScheme -Light
-
-# Set the default app mode color scheme to the dark (current user only)
-# Установить цвет режима приложений по умолчанию на темный (только для текущего пользователя)
-AppMode -Dark
-
-# Set the default app mode color scheme to the light (current user only)
-# Установить цвет режима приложений по умолчанию на светлый (только для текущего пользователя)
-# AppMode -Light
-
-# Do not show the "New App Installed" indicator
-# Не показывать уведомление "Установлено новое приложение"
-NewAppInstalledNotification -Hide
-
-# Show the "New App Installed" indicator (default value)
-# Показывать уведомление "Установлено новое приложение" (значение по умолчанию)
-# NewAppInstalledNotification -Show
-
-# Hide user first sign-in animation after the upgrade
-# Скрывать анимацию при первом входе в систему после обновления
-FirstLogonAnimation -Disable
-
-# Show user first sign-in animation after the upgrade (default value)
-# Показывать анимацию при первом входе в систему после обновления (значение по умолчанию)
-# FirstLogonAnimation -Enable
-
-# Set the quality factor of the JPEG desktop wallpapers to maximum (current user only)
-# Установить коэффициент качества обоев рабочего стола в формате JPEG на максимальный (только для текущего пользователя)
-JPEGWallpapersQuality -Max
-
-# Set the quality factor of the JPEG desktop wallpapers to default (current user only)
-# Установить коэффициент качества обоев рабочего стола в формате JPEG по умолчанию (только для текущего пользователя)
-# JPEGWallpapersQuality -Default
-
-# Start Task Manager in expanded mode (current user only)
-# Запускать Диспетчера задач в развернутом виде (только для текущего пользователя)
-TaskManagerWindow -Expanded
-
-# Start Task Manager in compact mode (current user only) (default value)
-# Запускать Диспетчера задач в свернутом виде (только для текущего пользователя) (значение по умолчанию)
-# TaskManagerWindow -Compact
-
-# Show a notification when your PC requires a restart to finish updating
-# Показывать уведомление, когда компьютеру требуется перезагрузка для завершения обновления
-RestartNotification -Show
-
-# Do not show a notification when your PC requires a restart to finish updating (default value)
-# Не показывать уведомление, когда компьютеру требуется перезагрузка для завершения обновления (значение по умолчанию)
-# RestartNotification -Hide
-
-# Do not add the "- Shortcut" suffix to the file name of created shortcuts (current user only)
-# Нe дoбaвлять "- яpлык" к имени coздaвaeмых яpлыков (только для текущего пользователя)
-ShortcutsSuffix -Disable
-
-# Add the "- Shortcut" suffix to the file name of created shortcuts (current user only) (default value)
-# Дoбaвлять "- яpлык" к имени coздaвaeмых яpлыков (только для текущего пользователя) (значение по умолчанию)
-# ShortcutsSuffix -Enable
-
-# Use the PrtScn button to open screen snipping (current user only)
-# Использовать кнопку PRINT SCREEN, чтобы запустить функцию создания фрагмента экрана (только для текущего пользователя)
-PrtScnSnippingTool -Enable
-
-# Do not use the PrtScn button to open screen snipping (current user only) (default value)
-# Не использовать кнопку PRINT SCREEN, чтобы запустить функцию создания фрагмента экрана (только для текущего пользователя) (значение по умолчанию)
-# PrtScnSnippingTool -Disable
-#endregion UI & Personalization
-
-#region OneDrive
-# Uninstall OneDrive
-# Удалить OneDrive
-UninstallOneDrive
-
-# Install OneDrive (current user only) (default value)
-# Установить OneDrive (только для текущего пользователя) (значение по умолчанию)
-# InstallOneDrive
-#endregion OneDrive
-
-#region System
-#region StorageSense
-# Turn on Storage Sense (current user only)
-# Включить Контроль памяти (только для текущего пользователя)
-StorageSense -Enable
-
-# Turn off Storage Sense (current user only) (default value)
-# Выключить Контроль памяти (только для текущего пользователя) (значение по умолчанию)
-# StorageSense -Disable
-
-# Run Storage Sense every month (current user only)
-# Запускать Контроль памяти каждый месяц (только для текущего пользователя)
-StorageSenseFrequency -Month
-
-# Run Storage Sense during low free disk space (default value) (current user only)
-# Запускать Контроль памяти, когда остается мало место на диске (значение по умолчанию) (только для текущего пользователя)
-# StorageSenseFrequency -Default
-
-# Delete temporary files that apps aren't using (current user only)
-# Удалять временные файлы, не используемые в приложениях (только для текущего пользователя)
-StorageSenseTempFiles -Enable
-
-# Do not delete temporary files that apps aren't using (current user only)
-# Не удалять временные файлы, не используемые в приложениях (только для текущего пользователя)
-# StorageSenseTempFiles -Disable
-
-# Delete files in recycle bin if they have been there for over 30 days (current user only)
-# Удалять файлы из корзины, если они находятся в корзине более 30 дней (только для текущего пользователя)
-StorageSenseRecycleBin -Enable
-
-# Do not delete files in recycle bin if they have been there for over 30 days (current user only)
-# Не удалять файлы из корзины, если они находятся в корзине более 30 дней (только для текущего пользователя)
-# StorageSenseRecycleBin -Disable
-#endregion StorageSense
-
-# Disable hibernation if the device is not a laptop
-# Отключить режим гибернации, если устройство не является ноутбуком
-Hibernate -Disable
-
-# Enable hibernate (default value)
-# Включить режим гибернации (значение по умолчанию)
-# Hibernate -Enable
-
-# Change the %TEMP% environment variable path to the %SystemDrive%\Temp (both machine-wide, and for the current user)
-# Изменить путь переменной среды для %TEMP% на %SystemDrive%\Temp (для всех пользователей)
-TempPath -SystemDrive
-
-# Change %TEMP% environment variable path to the %LOCALAPPDATA%\Temp (both machine-wide, and for the current user) (default value)
-# Изменить путь переменной среды для %TEMP% на LOCALAPPDATA%\Temp (для всех пользователей) (значение по умолчанию)
-# TempPath -Default
-
-# Disable Windows 260 character path limit
-# Отключить ограничение Windows на 260 символов в пути
-Win32LongPathLimit -Disable
-
-# Enable Windows 260 character path limit (default value)
-# Включить ограничение Windows на 260 символов в пути (значение по умолчанию)
-# Win32LongPathLimit -Enable
-
-# Display the Stop error information on the BSoD
-# Отображать Stop-ошибку при появлении BSoD
-BSoDStopError -Enable
-
-# Do not display the Stop error information on the BSoD (default value)
-# Не отображать Stop-ошибку при появлении BSoD (значение по умолчанию)
-# BSoDStopError -Disable
-
-# Change "Behavior of the elevation prompt for administrators in Admin Approval Mode" to "Elevate without prompting"
-# Изменить "Поведение запроса на повышение прав для администраторов в режиме одобрения администратором" на "Повышение прав без запроса"
-AdminApprovalMode -Disable
-
-# Change "Behavior of the elevation prompt for administrators in Admin Approval Mode" to "Prompt for consent for non-Windows binaries" (default value)
-# Изменить "Поведение запроса на повышение прав для администраторов в режиме одобрения администратором" на "Запрос согласия для исполняемых файлов, отличных от Windows" (значение по умолчанию)
-# AdminApprovalMode -Enable
-
-# Turn on access to mapped drives from app running with elevated permissions with Admin Approval Mode enabled
-# Включить доступ к сетевым дискам при включенном режиме одобрения администратором при доступе из программ, запущенных с повышенными правами
-MappedDrivesAppElevatedAccess -Enable
-
-# Turn off access to mapped drives from app running with elevated permissions with Admin Approval Mode enabled (default value)
-# Выключить доступ к сетевым дискам при включенном режиме одобрения администратором при доступе из программ, запущенных с повышенными правами (значение по умолчанию)
-# MappedDrivesAppElevatedAccess -Disable
-
-# Opt out of the Delivery Optimization-assisted updates downloading
-# Отказаться от загрузки обновлений с помощью оптимизации доставки
-DeliveryOptimization -Disable
-
-# Opt-in to the Delivery Optimization-assisted updates downloading (default value)
-# Включить загрузку обновлений с помощью оптимизации доставки (значение по умолчанию)
-# DeliveryOptimization -Enable
-
-# Always wait for the network at computer startup and logon for workgroup networks
-# Всегда ждать сеть при запуске и входе в систему для рабочих групп
-WaitNetworkStartup -Enable
-
-# Never wait for the network at computer startup and logon for workgroup networks (default value)
-# Никогда не ждать сеть при запуске и входе в систему для рабочих групп (значение по умолчанию)
-# WaitNetworkStartup -Disable
-
-# Do not let Windows decide which printer should be the default one (current user only)
-# Не разрешать Windows решать, какой принтер должен использоваться по умолчанию (только для текущего пользователя)
-WindowsManageDefaultPrinter -Disable
-
-# Let Windows decide which printer should be the default one (current user only) (default value)
-# Разрешать Windows решать, какой принтер должен использоваться по умолчанию (только для текущего пользователя) (значение по умолчанию)
-# WindowsManageDefaultPrinter -Enable
-
-# Disable the following Windows features
-# Отключить следующие компоненты Windows
-WindowsFeatures -Disable
-
-# Enable Windows features (default value)
-# Включить компоненты Windows (значение по умолчанию)
-# WindowsFeatures -Enable
-
-# Disable Feature On Demand v2 (FODv2) capabilities using the pop-up dialog box
-# Отключить компоненты "Функции по требованию" (FODv2), используя всплывающее диалоговое окно
-DisableWindowsCapabilities
-
-# Opt-in to Microsoft Update service, so to receive updates for other Microsoft products
-# Подключаться к службе Microsoft Update так, чтобы при обновлении Windows получать обновления для других продуктов Майкрософт
-UpdateMicrosoftProducts -Enable
-
-# Opt-out of Microsoft Update service, so not to receive updates for other Microsoft products (default value)
-# Не подключаться к службе Microsoft Update так, чтобы при обновлении Windows не получать обновления для других продуктов Майкрософт (значение по умолчанию)
-# UpdateMicrosoftProducts -Disable
-
-# Do not let UWP apps run in the background except some (current user only)
-# Не разрешать UWP-приложениям работать в фоновом режиме, кроме некоторых (только для текущего пользователя)
-BackgroundUWPApps -Disable
-
-# Let UWP apps run in the background (current user only) (default value)
-# Разрешить UWP-приложениям работать в фоновом режиме (только для текущего пользователя) (значение по умолчанию)
-# BackgroundUWPApps -Enable
-
-# Set the power management scheme on "High performance" if device is a desktop
-# Установить схему управления питанием на "Высокая производительность", если устройство является стационарным ПК
-PowerManagementScheme -High
-
-# Set the power management scheme on "Balanced" (default value)
-# Установить схему управления питанием на "Сбалансированная" (значение по умолчанию)
-# PowerManagementScheme -Balanced
-
-# Use latest installed .NET runtime for all apps
-# Использовать последнюю установленную среду выполнения .NET для всех приложений
-LatestInstalled.NET -Enable
-
-# Do not use latest installed .NET runtime for all apps (default value)
-# Не использовать последнюю установленную версию .NET для всех приложений (значение по умолчанию)
-# LatestInstalled.NET -Disable
-
-# Do not allow the computer (if device is not a laptop) to turn off the network adapters to save power
-# Запретить отключение всех сетевых адаптеров для экономии энергии (если устройство не является ноутбуком)
-PCTurnOffDevice -Disable
-
-# Allow the computer to turn off the network adapters to save power (default value)
-# Разрешить отключение всех сетевых адаптеров для экономии энергии (значение по умолчанию)
-# PCTurnOffDevice -Enable
-
-# Set the default input method to the English language
-# Установить метод ввода по умолчанию на английский язык
-SetInputMethod -English
-
-# Reset the default input method
-# Сбросить метод ввода по умолчанию
-# SetInputMethod -Default
-
-<#
-	Change the location of the user folders to any disks root of your choice using the interactive menu (current user only)
-	User files or folders won't me moved to a new location
-
-	Изменить расположение пользовательских папок в корень любого диска на выбор с помощью интерактивного меню (только для текущего пользователя)
-	Пользовательские файлы и папки не будут перемещены в новое расположение
-#>
-ChangeUserShellFolderLocation -Root
-
-<#
-	Change the location of the user folders to the default values (current user only)
-	User files or folders won't me moved to the new location
-
-	Изменить расположение пользовательских папок на значения по умолчанию (только для текущего пользователя)
-	Пользовательские файлы и папки не будут перемещены в новое расположение
-#>
-# ChangeUserShellFolderLocation -Default
-
-# Save screenshots by pressing Win+PrtScr to the Desktop folder (current user only)
-# Сохранять скриншоты по нажатию Win+PrtScr в папку "рабочий стол" (только для текущего пользователя)
-WinPrtScrFolder -Desktop
-
-# Save screenshots by pressing Win+PrtScr to the Pictures folder (current user only) (default value)
-# Cохранять скриншоты по нажатию Win+PrtScr в папку "Изображения" (только для текущего пользователя) (значение по умолчанию)
-# WinPrtScrFolder -Default
-
-<#
-	Run troubleshooters automatically, then notify
-	In order this feature to work the OS level of diagnostic data gathering must be set to "Optional diagnostic data"
-
-	Автоматически запускать средства устранения неполадок, а затем уведомлять
-	Необходимо установить уровень сбора диагностических сведений ОС на "Необязательные диагностические данные", чтобы работала данная функция
-#>
-RecommendedTroubleshooting -Automatic
-
-<#
-	Ask me before running troubleshooters (default value)
-	In order this feature to work the OS level of diagnostic data gathering must be set to "Optional diagnostic data"
-
-	Спрашивать перед запуском средств устранения неполадок (значение по умолчанию)
-	Необходимо установить уровень сбора диагностических сведений ОС на "Необязательные диагностические данные", чтобы работала данная функция
-#>
-# RecommendedTroubleshooting -Default
-
-# Launch folder windows in a separate process (current user only)
-# Запускать окна с папками в отдельном процессе (только для текущего пользователя)
-FoldersLaunchSeparateProcess -Enable
-
-# Do not launch folder windows in a separate process (current user only) (default value)
-# Не запускать окна с папками в отдельном процессе (только для текущего пользователя) (значение по умолчанию)
-# FoldersLaunchSeparateProcess -Disable
-
-# Disable and delete reserved storage after the next update installation
-# Отключить и удалить зарезервированное хранилище после следующей установки обновлений
-ReservedStorage -Disable
-
-# Enable reserved storage (default value)
-# Включить зарезервированное хранилище (значение по умолчанию)
-# ReservedStorage -Enable
-
-# Disable help lookup via F1 (current user only)
-# Отключить открытие справки по нажатию F1 (только для текущего пользователя)
-F1HelpPage -Disable
-
-# Enable help lookup via F1 (current user only) (default value)
-# Включить открытие справки по нажатию F1 (только для текущего пользователя) (значение по умолчанию)
-# F1HelpPage -Enable
-
-# Enable Num Lock at startup
-# Включить Num Lock при загрузке
-NumLock -Enable
-
-# Disable Num Lock at startup (default value)
-# Выключить Num Lock при загрузке (значение по умолчанию)
-# NumLock -Disable
-
-# Disable StickyKey after tapping the Shift key 5 times (current user only)
-# Выключить залипание клавиши Shift после 5 нажатий (только для текущего пользователя)
-StickyShift -Disable
-
-# Enable StickyKey after tapping the Shift key 5 times (current user only) (default value)
-# Включить залипание клавиши Shift после 5 нажатий (только для текущего пользователя) (значение по умолчанию)
-# StickyShift -Enable
-
-# Disable AutoPlay for all media and devices (current user only)
-# Выключать автозапуск для всех носителей и устройств (только для текущего пользователя)
-Autoplay -Disable
-
-# Enable AutoPlay for all media and devices (current user only) (default value)
-# Включить автозапуск для всех носителей и устройств (только для текущего пользователя) (значение по умолчанию)
-# Autoplay -Enable
-
-# Disable thumbnail cache removal
-# Отключить удаление кэша миниатюр
-ThumbnailCacheRemoval -Disable
-
-# Enable thumbnail cache removal (default value)
-# Включить удаление кэша миниатюр (значение по умолчанию)
-# ThumbnailCacheRemoval -Enable
-
-# Enable automatically saving my restartable apps when signing out and restart them after signing in (current user only)
-# Включить автоматическое сохранение моих перезапускаемых приложений при выходе из системы и перезапускать их после выхода (только для текущего пользователя)
-SaveRestartableApps -Enable
-
-# Disable automatically saving my restartable apps when signing out and restart them after signing in (current user only) (default value)
-# Выключить автоматическое сохранение моих перезапускаемых приложений при выходе из системы и перезапускать их после выхода (только для текущего пользователя) (значение по умолчанию)
-# SaveRestartableApps -Disable
-
-# Enable "Network Discovery" and "File and Printers Sharing" for workgroup networks
-# Включить сетевое обнаружение и общий доступ к файлам и принтерам для рабочих групп
-NetworkDiscovery -Enable
-
-# Disable "Network Discovery" and "File and Printers Sharing" for workgroup networks (default value)
-# Выключить сетевое обнаружение и общий доступ к файлам и принтерам для рабочих групп (значение по умолчанию)
-# NetworkDiscovery -Disable
-
-# Automatically adjust active hours for me based on daily usage
-# Автоматически изменять период активности для этого устройства на основе действий
-SmartActiveHours -Enable
-
-# Do not automatically adjust active hours for me based on daily usage (default value)
-# Не изменять автоматически период активности для этого устройства на основе действий (значение по умолчанию)
-# SmartActiveHours -Disable
-
-# Enable restarting this device as soon as possible when a restart is required to install an update
-# Включить перезапуск этого устройства как можно быстрее, если для установки обновления требуется перезагрузка
-DeviceRestartAfterUpdate -Enable
-
-# Disable restarting this device as soon as possible when a restart is required to install an update (default value)
-# Выключить перезапуск этого устройства как можно быстрее, если для установки обновления требуется перезагрузка (значение по умолчанию)
-# DeviceRestartAfterUpdate -Disable
-#endregion System
-
-#region WSL
-<#
-	Install the Windows Subsystem for Linux (WSL)
-	Установить подсистему Windows для Linux (WSL)
-
-	https://github.com/farag2/Windows-10-Setup-Script/issues/43
-	https://github.com/microsoft/WSL/issues/5437
-#>
-# WSL -Enable
-
-# Uninstall the Windows Subsystem for Linux (WSL)
-# Удалить подсистему Windows для Linux (WSL)
-# WSL -Disable
-
-<#
-	Download and install the Linux kernel update package
-	Set WSL 2 as the default version when installing a new Linux distribution
-	Run the function only after WSL installed and PC restart
-
-	Скачать и установить пакет обновления ядра Linux
-	Установить WSL 2 как версию по умолчанию при установке нового дистрибутива Linux
-	Выполните функцию только после установки WSL и перезагрузки ПК
-
-	https://github.com/microsoft/WSL/issues/5437
-#>
-# EnableWSL2
-
-<#
-	Disable swap file in WSL
-	Use only if the %TEMP% environment variable path changed
-
-	Отключить файл подкачки в WSL
-	Используйте только в случае, если изменился путь переменной среды для %TEMP%
-
-	https://github.com/microsoft/WSL/issues/5437
-#>
-# WSLSwap -Disable
-
-<#
-	Enable swap file in WSL
-	Включить файл подкачки в WSL
-
-	https://github.com/microsoft/WSL/issues/5437
-#>
-# WSLSwap -Enable
-#endregion WSL
-
-#region Start menu
-# Hide recently added apps in the Start menu
-# Скрывать недавно добавленные приложения в меню "Пуск"
-RecentlyAddedApps -Hide
-
-# Show recently added apps in the Start menu (default value)
-# Показывать недавно добавленные приложения в меню "Пуск" (значение по умолчанию)
-# RecentlyAddedApps -Show
-
-# Hide app suggestions in the Start menu
-# Скрывать рекомендации в меню "Пуск"
-AppSuggestions -Hide
-
-# Show app suggestions in the Start menu (default value)
-# Показывать рекомендации в меню "Пуск" (значение по умолчанию)
-# AppSuggestions -Show
-
-# Run the Command Prompt shortcut from the Start menu as Administrator
-# Запускать ярлык командной строки в меню "Пуск" от имени Администратора
-RunCMDShortcut -Elevated
-
-# Run the Command Prompt shortcut from the Start menu as user (default value)
-# Запускать ярлык командной строки в меню "Пуск" от имени пользователя (значение по умолчанию)
-# RunCMDShortcut -NonElevated
-
-# Unpin all the Start tiles
-# Открепить все ярлыки от начального экрана
-UnpinAllStartTiles
-
-<#
-	Test if syspin.exe is in a folder. Unless download it
-	Проверить, находится ли файл syspin.exe в папке. Иначе скачать его
-
-	http://www.technosys.net/products/utils/pintotaskbar
-	SHA256: 6967E7A3C2251812DD6B3FA0265FB7B61AADC568F562A98C50C345908C6E827
-#>
-syspin
-
-# Pin the "Control Panel" shortcut to Start within syspin
-# Закрепить ярлык "Панели управления" на начальном экране с помощью syspin
-PinControlPanel
-
-# Pin the old-style "Devices and Printers" shortcut to Start within syspin
-# Закрепить ярлык старого формата "Устройства и принтеры" на начальном экране с помощью syspin
-PinDevicesPrinters
-
-# Pin the Command Prompt" shortcut to Start within syspin
-# Закрепить ярлык "Командная строка" на начальном экране с помощью syspin
-PinCommandPrompt
-#endregion Start menu
-
-#region UWP apps
-<#
-	Uninstall UWP apps using the pop-up dialog box that enables the user to select packages to remove
-	App packages will not be installed for new users if "Uninstall for All Users" is checked
-
-	Удалить UWP-приложения, используя всплывающее диалоговое окно, позволяющее пользователю отметить пакеты на удаление
-	Приложения не будут установлены для новых пользователе, если отмечено "Удалять для всех пользователей"
-#>
-UninstallUWPApps
-
-<#
-	Open Microsoft Store "HEVC Video Extensions from Device Manufacturer" page
-	The extension can be installed without Microsoft account for free instead of $0.99
-	"Movies & TV" app required
-
-	Открыть страницу "Расширения для видео HEVC от производителя устройства" в Microsoft Store
-	Расширение может быть установлено бесплатно без учетной записи Microsoft вместо 0,99 $
-	Для работы необходимо приложение "Кино и ТВ"
-#>
-InstallHEVC
-
-# Disable Cortana autostarting
-# Выключить автозагрузку Кортана
-CortanaAutostart -Disable
-
-# Disable Cortana autostarting (default value)
-# Включить автозагрузку Кортана (значение по умолчанию)
-# CortanaAutostart -Enable
-
-# Check for UWP apps updates
-# Проверить обновления UWP-приложений
-CheckUWPAppsUpdates
-#endregion UWP apps
-
-#region Gaming
-# Disable Xbox Game Bar
-# Отключить Xbox Game Bar
-XboxGameBar -Disable
-
-# Enable Xbox Game Bar (default value)
-# Включить Xbox Game Bar (значение по умолчанию)
-# XboxGameBar -Enable
-
-# Disable Xbox Game Bar tips
-# Отключить советы Xbox Game Bar
-XboxGameTips -Disable
-
-# Enable Xbox Game Bar tips (default value)
-# Включить советы Xbox Game Bar (значение по умолчанию)
-# XboxGameTips -Enable
-
-<#
-	Set "High performance" in graphics performance preference for an app
-	Only with a dedicated GPU
-
-	Установить параметры производительности графики для отдельных приложений на "Высокая производительность"
-	Только при наличии внешней видеокарты
-#>
-SetAppGraphicsPerformance
-
-<#
-	Turn on hardware-accelerated GPU scheduling. Restart needed
-	Only with a dedicated GPU and WDDM verion is 2.7 or higher
-
-	Включить планирование графического процессора с аппаратным ускорением. Необходима перезагрузка
-	Только при наличии внешней видеокарты и WDDM версии 2.7 и выше
-#>
-GPUScheduling -Enable
-
-# Turn off hardware-accelerated GPU scheduling (default value). Restart needed
-# Выключить планирование графического процессора с аппаратным ускорением (значение по умолчанию). Необходима перезагрузка
-# GPUScheduling -Disable
-#endregion Gaming
-
-#region Scheduled tasks
-<#
-	Create a task to clean up unused files and Windows updates in the Task Scheduler
-	A minute before the task starts, a warning in the Windows action center will appear
-	The task runs every 90 days
-
-	Создать задачу в Планировщике задач по очистке неиспользуемых файлов и обновлений Windows
-	За минуту до выполнения задачи в Центре уведомлений Windows появится предупреждение
-	Задача выполняется каждые 90 дней
-#>
-CreateCleanUpTask
-
-# Delete a task to clean up unused files and Windows updates in the Task Scheduler
-# Удалить задачу в Планировщике задач по очистке неиспользуемых файлов и обновлений Windows
-# DeleteCleanUpTask
-
-<#
-	Create a task to clear the %SystemRoot%\SoftwareDistribution\Download folder in the Task Scheduler
-	The task runs on Thursdays every 4 weeks
-
-	Создать задачу в Планировщике задач по очистке папки %SystemRoot%\SoftwareDistribution\Download
-	Задача выполняется по четвергам каждую 4 неделю
-#>
-CreateSoftwareDistributionTask
-
-# Delete a task to clear the %SystemRoot%\SoftwareDistribution\Download folder in the Task Scheduler
-# Удалить задачу в Планировщике задач по очистке папки %SystemRoot%\SoftwareDistribution\Download
-# DeleteSoftwareDistributionTask
-
-<#
-	Create a task to clear the %TEMP% folder in the Task Scheduler
-	The task runs every 62 days
-
-	Создать задачу в Планировщике задач по очистке папки %TEMP%
-	Задача выполняется каждые 62 дня
-#>
-CreateTempTask
-
-# Delete a task to clear the %TEMP% folder in the Task Scheduler
-# Удалить задачу в Планировщике задач по очистке папки %TEMP%
-# DeleteTempTask
-#endregion Scheduled tasks
-
-#region Microsoft Defender & Security
-# Enable Controlled folder access and add protected folders
-# Включить контролируемый доступ к папкам и добавить защищенные папки
-AddProtectedFolders
-
-# Remove all added protected folders
-# Удалить все добавленные защищенные папки
-# RemoveProtectedFolders
-
-# Allow an app through Controlled folder access
-# Разрешить работу приложения через контролируемый доступ к папкам
-AddAppControlledFolder
-
-# Remove all allowed apps through Controlled folder access
-# Удалить все добавленные разрешенные приложение через контролируемый доступ к папкам
-# RemoveAllowedAppsControlledFolder
-
-# Add a folder to the exclusion from Microsoft Defender scanning
-# Добавить папку в список исключений сканирования Microsoft Defender
-AddDefenderExclusionFolder
-
-# Remove all excluded folders from Microsoft Defender scanning
-# Удалить все папки из списка исключений сканирования Microsoft Defender
-# RemoveDefenderExclusionFolders
-
-# Add a file to the exclusion from Microsoft Defender scanning
-# Добавить файл в список исключений сканирования Microsoft Defender
-AddDefenderExclusionFile
-
-# Remove all excluded files from Microsoft Defender scanning
-# Удалить все файлы из списка исключений сканирования Microsoft Defender
-# RemoveDefenderExclusionFiles
-
-# Enable Microsoft Defender Exploit Guard network protection
-# Включить защиту сети в Microsoft Defender Exploit Guard
-NetworkProtection -Enable
-
-# Disable Microsoft Defender Exploit Guard network protection (default value)
-# Выключить защиту сети в Microsoft Defender Exploit Guard
-# NetworkProtection -Disable
-
-# Enable detection for potentially unwanted applications and block them
-# Включить обнаружение потенциально нежелательных приложений и блокировать их
-PUAppsDetection -Enable
-
-# Disable detection for potentially unwanted applications and block them (default value)
-# Выключить обнаружение потенциально нежелательных приложений и блокировать их (значение по умолчанию)
-# PUAppsDetection -Disable
-
-# Enable sandboxing for Microsoft Defender
-# Включить песочницу для Microsoft Defender
-DefenderSandbox -Enable
-
-# Disable sandboxing for Microsoft Defender (default value)
-# Выключить песочницу для Microsoft Defender (значение по умолчанию)
-# DefenderSandbox -Disable
-
-# Dismiss Microsoft Defender offer in the Windows Security about signing in Microsoft account
-# Отклонить предложение Microsoft Defender в "Безопасность Windows" о входе в аккаунт Microsoft
-DismissMSAccount
-
-# Dismiss Microsoft Defender offer in the Windows Security about turning on the SmartScreen filter for Microsoft Edge
-# Отклонить предложение Microsoft Defender в "Безопасность Windows" включить фильтр SmartScreen для Microsoft Edge
-DismissSmartScreenFilter
-
-# Enable events auditing generated when a process is created or starts
-# Включить аудит событий, возникающих при создании или запуске процесса
-AuditProcess -Enable
-
-# Disable events auditing generated when a process is created or starts (default value)
-# Выключить аудит событий, возникающих при создании или запуске процесса (значение по умолчанию)
-# AuditProcess -Disable
-
-<#
-	Include command line in process creation events
-	In order this feature to work events auditing must be enabled ("AuditProcess" function)
-
-	Включать командную строку в событиях создания процесса
-	Необходимо включить аудит событий, чтобы работала данная опция (функция "AuditProcess")
-#>
-AuditCommandLineProcess -Enable
-
-# Do not include command line in process creation events (default value)
-# Не включать командную строку в событиях создания процесса (значение по умолчанию)
-# AuditCommandLineProcess -Disable
-
-<#
-	Create "Process Creation" Event Viewer Custom View
-	In order this feature to work events auditing and command line in process creation events must be enabled ("EnableAuditProcess" function)
-
-	Создать настаиваемое представление "Создание процесса" в Просмотре событий
-	Необходимо включить аудит событий и командной строки в событиях создания процесса, чтобы работал данный функционал (функция "EnableAuditProcess")
-#>
-EventViewerCustomView -Enable
-
-# Remove "Process Creation" Event Viewer Custom View (default value)
-# Удалить настаиваемое представление "Создание процесса" в Просмотре событий (значение по умолчанию)
-# EventViewerCustomView -Disable
-
-# Enable logging for all Windows PowerShell modules
-# Включить ведение журнала для всех модулей Windows PowerShell
-PowerShellModulesLogging -Enable
-
-# Disable logging for all Windows PowerShell modules (default value)
-# Выключить ведение журнала для всех модулей Windows PowerShell (значение по умолчанию)
-# PowerShellModulesLogging -Disable
-
-# Enable logging for all PowerShell scripts input to the Windows PowerShell event log
-# Включить ведение журнала для всех вводимых сценариев PowerShell в журнале событий Windows PowerShell
-PowerShellScriptsLogging -Enable
-
-# Disable logging for all PowerShell scripts input to the Windows PowerShell event log (default value)
-# Выключить ведение журнала для всех вводимых сценариев PowerShell в журнале событий Windows PowerShell (значение по умолчанию)
-# PowerShellScriptsLogging -Disable
-
-# Disable apps and files checking within Microsofot Defender SmartScreen
-# Выключить проверку приложений и файлов фильтром SmartScreen в Microsoft Defender
-AppsSmartScreen -Disable
-
-# Enable apps and files checking within Microsofot Defender SmartScree (default value)
-# Включить проверку приложений и файлов фильтром SmartScreen в Microsoft Defender (значение по умолчанию)
-# AppsSmartScreen -Enable
-
-# Disable the Attachment Manager marking files that have been downloaded from the Internet as unsafe (current user only)
-# Выключить проверку Диспетчером вложений файлов, скачанных из интернета как небезопасные (только для текущего пользователя)
-SaveZoneInformation -Disable
-
-# Enable the Attachment Manager marking files that have been downloaded from the Internet as unsafe (current user only) (default value)
-# Включить проверку Диспетчера вложений файлов, скачанных из интернета как небезопасные (только для текущего пользователя) (значение по умолчанию)
-# SaveZoneInformation -Enable
-
-<#
-	Disable Windows Script Host (current user only)
-	It becomes impossible to run .js and .vbs files
-
-	Отключить Windows Script Host (только для текущего пользователя)
-	Становится невозможным запустить файлы .js и .vbs
-#>
-WindowsScriptHost -Disable
-
-# Emable Windows Script Host (current user only) (default value)
-# Включить Windows Script Host (только для текущего пользователя) (значение по умолчанию)
-# WindowsScriptHost -Enable
-
-# Enable Windows Sandbox
-# Включить Windows Sandbox
-WindowsSandbox -Enable
-
-# Disable Windows Sandbox (default value)
-# Выключить Windows Sandbox (значение по умолчанию)
-# WindowsSandbox -Disable
-#endregion Microsoft Defender & Security
-
-#region Context menu
-# Add the "Extract all" item to Windows Installer (.msi) context menu
-# Добавить пункт "Извлечь все" в контекстное меню Windows Installer (.msi)
-MSIExtractContext -Add
-
-# Remove the "Extract all" item from Windows Installer (.msi) context menu (default value)
-# Удалить пункт "Извлечь все" из контекстного меню Windows Installer (.msi) (значение по умолчанию)
-# MSIExtractContext -Remove
-
-# Add the "Install" item to the .cab archives context menu
-# Добавить пункт "Установить" в контекстное меню .cab архивов
-CABInstallContext -Add
-
-# Remove the "Install" item from the .cab archives context menu (default value)
-# Удалить пункт "Установить" из контекстного меню .cab архивов (значение по умолчанию)
-# CABInstallContext -Remove
-
-# Add the "Run as different user" item to the .exe files types context menu
-# Добавить пункт "Запуск от имени другого пользователя" в контекстного меню .exe файлов
-RunAsDifferentUserContext -Add
-
-# Remove the "Run as different user" item from the .exe files types context menu (default value)
-# Удалить пункт "Запуск от имени другого пользователя" из контекстное меню .exe файлов (значение по умолчанию)
-# RunAsDifferentUserContext -Remove
-
-# Hide the "Cast to Device" item from the context menu
-# Скрыть пункт "Передать на устройство" из контекстного меню
-CastToDeviceContext -Hide
-
-# Show the "Cast to Device" item in the context menu (default value)
-# Показывать пункт "Передать на устройство" в контекстном меню (значение по умолчанию)
-# CastToDeviceContext -Show
-
-# Hide the "Share" item from the context menu
-# Скрыть пункт "Отправить" (поделиться) из контекстного меню
-ShareContext -Hide
-
-# Show the "Share" item in the context menu (default value)
-# Показывать пункт "Отправить" (поделиться) в контекстном меню (значение по умолчанию)
-# ShareContext -Show
-
-# Hide the "Edit with Paint 3D" item from the context menu
-# Скрыть пункт "Изменить с помощью Paint 3D" из контекстного меню
-# EditWithPaint3DContext -Hide
-
-# Show the "Edit with Paint 3D" item in the context menu (default value)
-# Показывать пункт "Изменить с помощью Paint 3D" в контекстном меню (значение по умолчанию)
-# EditWithPaint3DContext -Show
-
-# Hide the "Edit with Photos" item from the context menu
-# Скрыть пункт "Изменить с помощью приложения "Фотографии"" из контекстного меню
-EditWithPhotosContext -Hide
-
-# Show the "Edit with Photos" item in the context menu (default value)
-# Показывать пункт "Изменить с помощью приложения "Фотографии"" в контекстном меню (значение по умолчанию)
-# EditWithPhotosContext -Show
-
-# Hide the "Create a new video" item from the context menu
-# Скрыть пункт "Создать новое видео" из контекстного меню
-CreateANewVideoContext -Hide
-
-# Show the "Create a new video" item in the context menu (default value)
-# Показывать пункт "Создать новое видео" в контекстном меню (значение по умолчанию)
-# CreateANewVideoContext -Show
-
-# Hide the "Edit" item from the images context menu
-# Скрыть пункт "Изменить" из контекстного меню изображений
-ImagesEditContext -Hide
-
-# Show the "Edit" item from in images context menu (default value)
-# Показывать пункт "Изменить" в контекстном меню изображений (значение по умолчанию)
-# ImagesEditContext -Show
-
-# Hide the "Print" item from the .bat and .cmd context menu
-# Скрыть пункт "Печать" из контекстного меню .bat и .cmd файлов
-PrintCMDContext -Hide
-
-# Show the "Print" item in the .bat and .cmd context menu (default value)
-# Показывать пункт "Печать" в контекстном меню .bat и .cmd файлов (значение по умолчанию)
-# PrintCMDContext -Show
-
-# Hide the "Include in Library" item from the context menu
-# Скрыть пункт "Добавить в библиотеку" из контекстного меню
-IncludeInLibraryContext -Hide
-
-# Show the "Include in Library" item in the context menu (default value)
-# Показывать пункт "Добавить в библиотеку" в контекстном меню (значение по умолчанию)
-# IncludeInLibraryContext -Show
-
-# Hide the "Send to" item from the folders context menu
-# Скрыть пункт "Отправить" из контекстного меню папок
-SendToContext -Hide
-
-# Show the "Send to" item in the folders context menu (default value)
-# Показывать пункт "Отправить" в контекстном меню папок (значение по умолчанию)
-# SendToContext -Show
-
-# Hide the "Turn on BitLocker" item from the context menu
-# Скрыть пункт "Включить BitLocker" из контекстного меню
-BitLockerContext -Hide
-
-# Show the "Turn on BitLocker" item in the context menu (default value)
-# Показывать пункт "Включить BitLocker" в контекстном меню (значение по умолчанию)
-# BitLockerContext -Show
-
-# Remove the "Bitmap image" item from the "New" context menu
-# Удалить пункт "Точечный рисунок" из контекстного меню "Создать"
-BitmapImageNewContext -Remove
-
-# Add the "Bitmap image" item in the "New" context menu (default value)
-# Восстановить пункт "Точечный рисунок" в контекстного меню "Создать" (значение по умолчанию)
-# BitmapImageNewContext -Add
-
-# Remove the "Rich Text Document" item from the "New" context menu
-# Удалить пункт "Документ в формате RTF" из контекстного меню "Создать"
-RichTextDocumentNewContext -Remove
-
-# Add the "Rich Text Document" item in the "New" context menu (default value)
-# Восстановить пункт "Документ в формате RTF" в контекстного меню "Создать" (значение по умолчанию)
-# RichTextDocumentNewContext -Add
-
-# Remove the "Compressed (zipped) Folder" item from the "New" context menu
-# Удалить пункт "Сжатая ZIP-папка" из контекстного меню "Создать"
-CompressedFolderNewContext -Remove
-
-# Add the "Compressed (zipped) Folder" item from the "New" context menu (default value)
-# Восстановить пункт "Сжатая ZIP-папка" в контекстном меню "Создать" (значение по умолчанию)
-# CompressedFolderNewContext -Add
-
-# Enable the "Open", "Print", and "Edit" context menu items for more than 15 items selected
-# Включить элементы контекстного меню "Открыть", "Изменить" и "Печать" при выделении более 15 элементов
-MultipleInvokeContext -Enable
-
-# Disable the "Open", "Print", and "Edit" context menu items for more than 15 items selected (default value)
-# Отключить элементы контекстного меню "Открыть", "Изменить" и "Печать" при выделении более 15 элементов (значение по умолчанию)
-# MultipleInvokeContext -Disable
-
-# Hide the "Look for an app in the Microsoft Store" item in the "Open with" dialog
-# Скрыть пункт "Поиск приложения в Microsoft Store" в диалоге "Открыть с помощью"
-UseStoreOpenWith -Hide
-
-# Show the "Look for an app in the Microsoft Store" item in the "Open with" dialog (default value)
-# Отображать пункт "Поиск приложения в Microsoft Store" в диалоге "Открыть с помощью" (значение по умолчанию)
-# UseStoreOpenWith -Show
-
-# Hide the "Previous Versions" tab from files and folders context menu and also the "Restore previous versions" context menu item
-# Скрыть вкладку "Предыдущие версии" в свойствах файлов и папок, а также пункт контекстного меню "Восстановить прежнюю версию"
-PreviousVersionsPage -Hide
-
-# Show the "Previous Versions" tab from files and folders context menu and also the "Restore previous versions" context menu item (default value)
-# Отображать вкладку "Предыдущие версии" в свойствах файлов и папок, а также пункт контекстного меню "Восстановить прежнюю версию" (значение по умолчанию)
-# PreviousVersionsPage -Show
-#endregion Context menu
-
-<#
-	Simulate pressing F5 to refresh the desktop
-	Refresh desktop icons, environment variables, taskbar
-	Restart the Start menu
-
-	Симулировать нажатие F5 для обновления рабочего стола
-	Обновить иконки рабочего стола, переменные среды, панель задач
-	Перезапустить меню "Пуск"
-#>
-Refresh
-
-# Errors output
-# Вывод ошибок
-Errors
+#This function finds any AppX/AppXProvisioned package and uninstalls it, except for Freshpaint, Windows Calculator, Windows Store, and Windows Photos.
+#Also, to note - This does NOT remove essential system services/software/etc such as .NET framework installations, Cortana, Edge, etc.
+
+#This will self elevate the script so with a UAC prompt since this script needs to be run as an Administrator in order to function properly.
+If (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]'Administrator')) {
+    Write-Host "You didn't run this script as an Administrator. This script will self elevate to run as an Administrator and continue."
+    Start-Sleep 1
+    Write-Host "                                               3"
+    Start-Sleep 1
+    Write-Host "                                               2"
+    Start-Sleep 1
+    Write-Host "                                               1"
+    Start-Sleep 1
+    Start-Process powershell.exe -ArgumentList ("-NoProfile -ExecutionPolicy Bypass -File `"{0}`"" -f $PSCommandPath) -Verb RunAs
+    Exit
+}
+
+#no errors throughout
+$ErrorActionPreference = 'silentlycontinue'
+
+$DebloatFolder = "C:\Temp\Windows10Debloater"
+If (Test-Path $DebloatFolder) {
+    Write-Output "$DebloatFolder exists. Skipping."
+}
+Else {
+    Write-Output "The folder '$DebloatFolder' doesn't exist. This folder will be used for storing logs created after the script runs. Creating now."
+    Start-Sleep 1
+    New-Item -Path "$DebloatFolder" -ItemType Directory
+    Write-Output "The folder $DebloatFolder was successfully created."
+}
+
+Start-Transcript -OutputDirectory "$DebloatFolder"
+
+Add-Type -AssemblyName PresentationCore, PresentationFramework
+
+Function DebloatAll {
+    #Removes AppxPackages
+    #Credit to /u/GavinEke for a modified version of my whitelist code
+    $WhitelistedApps = 'Microsoft.ScreenSketch|Microsoft.Paint3D|Microsoft.WindowsCalculator|Microsoft.WindowsStore|Microsoft.Windows.Photos|CanonicalGroupLimited.UbuntuonWindows|`
+    Microsoft.XboxGameCallableUI|Microsoft.XboxGamingOverlay|Microsoft.Xbox.TCUI|Microsoft.XboxGamingOverlay|Microsoft.XboxIdentityProvider|Microsoft.MicrosoftStickyNotes|Microsoft.MSPaint|Microsoft.WindowsCamera|.NET|Framework|`
+    Microsoft.HEIFImageExtension|Microsoft.ScreenSketch|Microsoft.StorePurchaseApp|Microsoft.VP9VideoExtensions|Microsoft.WebMediaExtensions|Microsoft.WebpImageExtension|Microsoft.DesktopAppInstaller|WindSynthBerry|MIDIBerry|Slack'
+    #NonRemovable Apps that where getting attempted and the system would reject the uninstall, speeds up debloat and prevents 'initalizing' overlay when removing apps
+    $NonRemovable = '1527c705-839a-4832-9118-54d4Bd6a0c89|c5e2524a-ea46-4f67-841f-6a9465d9d515|E2A4F912-2574-4A75-9BB0-0D023378592B|F46D4000-FD22-4DB4-AC8E-4E1DDDE828FE|InputApp|Microsoft.AAD.BrokerPlugin|Microsoft.AccountsControl|`
+    Microsoft.BioEnrollment|Microsoft.CredDialogHost|Microsoft.ECApp|Microsoft.LockApp|Microsoft.MicrosoftEdgeDevToolsClient|Microsoft.MicrosoftEdge|Microsoft.PPIProjection|Microsoft.Win32WebViewHost|Microsoft.Windows.Apprep.ChxApp|`
+    Microsoft.Windows.AssignedAccessLockApp|Microsoft.Windows.CapturePicker|Microsoft.Windows.CloudExperienceHost|Microsoft.Windows.ContentDeliveryManager|Microsoft.Windows.Cortana|Microsoft.Windows.NarratorQuickStart|`
+    Microsoft.Windows.ParentalControls|Microsoft.Windows.PeopleExperienceHost|Microsoft.Windows.PinningConfirmationDialog|Microsoft.Windows.SecHealthUI|Microsoft.Windows.SecureAssessmentBrowser|Microsoft.Windows.ShellExperienceHost|`
+    Microsoft.Windows.XGpuEjectDialog|Microsoft.XboxGameCallableUI|Windows.CBSPreview|windows.immersivecontrolpanel|Windows.PrintDialog|Microsoft.VCLibs.140.00|Microsoft.Services.Store.Engagement|Microsoft.UI.Xaml.2.0|*Nvidia*'
+    Get-AppxPackage -AllUsers | Where-Object {$_.Name -NotMatch $WhitelistedApps -and $_.Name -NotMatch $NonRemovable} | Remove-AppxPackage
+    Get-AppxPackage | Where-Object {$_.Name -NotMatch $WhitelistedApps -and $_.Name -NotMatch $NonRemovable} | Remove-AppxPackage
+    Get-AppxProvisionedPackage -Online | Where-Object {$_.PackageName -NotMatch $WhitelistedApps -and $_.PackageName -NotMatch $NonRemovable} | Remove-AppxProvisionedPackage -Online
+}
+
+Function DebloatBlacklist {
+
+    $Bloatware = @(
+
+        #Unnecessary Windows 10 AppX Apps
+        "Microsoft.BingNews"
+        "Microsoft.GetHelp"
+        "Microsoft.Getstarted"
+        "Microsoft.Messaging"
+        "Microsoft.Microsoft3DViewer"
+        "Microsoft.MicrosoftOfficeHub"
+        "Microsoft.MicrosoftSolitaireCollection"
+        "Microsoft.NetworkSpeedTest"
+        "Microsoft.News"
+        "Microsoft.Office.Lens"
+        "Microsoft.Office.OneNote"
+        "Microsoft.Office.Sway"
+        "Microsoft.OneConnect"
+        "Microsoft.People"
+        "Microsoft.Print3D"
+        "Microsoft.RemoteDesktop"
+        "Microsoft.SkypeApp"
+        "Microsoft.StorePurchaseApp"
+        "Microsoft.Office.Todo.List"
+        "Microsoft.Whiteboard"
+        "Microsoft.WindowsAlarms"
+        #"Microsoft.WindowsCamera"
+        "microsoft.windowscommunicationsapps"
+        "Microsoft.WindowsFeedbackHub"
+        "Microsoft.WindowsMaps"
+        "Microsoft.WindowsSoundRecorder"
+        "Microsoft.Xbox.TCUI"
+        "Microsoft.XboxApp"
+        "Microsoft.XboxGameOverlay"
+        "Microsoft.XboxIdentityProvider"
+        "Microsoft.XboxSpeechToTextOverlay"
+        "Microsoft.ZuneMusic"
+        "Microsoft.ZuneVideo"
+
+        #Sponsored Windows 10 AppX Apps
+        #Add sponsored/featured apps to remove in the "*AppName*" format
+        "*EclipseManager*"
+        "*ActiproSoftwareLLC*"
+        "*AdobeSystemsIncorporated.AdobePhotoshopExpress*"
+        "*Duolingo-LearnLanguagesforFree*"
+        "*PandoraMediaInc*"
+        "*CandyCrush*"
+        "*BubbleWitch3Saga*"
+        "*Wunderlist*"
+        "*Flipboard*"
+        "*Twitter*"
+        "*Facebook*"
+        "*Spotify*"
+        "*Minecraft*"
+        "*Royal Revolt*"
+        "*Sway*"
+        "*Speed Test*"
+        "*Dolby*"
+             
+        #Optional: Typically not removed but you can if you need to for some reason
+        #"*Microsoft.Advertising.Xaml_10.1712.5.0_x64__8wekyb3d8bbwe*"
+        #"*Microsoft.Advertising.Xaml_10.1712.5.0_x86__8wekyb3d8bbwe*"
+        #"*Microsoft.BingWeather*"
+        #"*Microsoft.MSPaint*"
+        #"*Microsoft.MicrosoftStickyNotes*"
+        #"*Microsoft.Windows.Photos*"
+        #"*Microsoft.WindowsCalculator*"
+        #"*Microsoft.WindowsStore*"
+    )
+    foreach ($Bloat in $Bloatware) {
+        Get-AppxPackage -Name $Bloat| Remove-AppxPackage
+        Get-AppxProvisionedPackage -Online | Where-Object DisplayName -like $Bloat | Remove-AppxProvisionedPackage -Online
+        Write-Output "Trying to remove $Bloat."
+    }
+}
+
+Function Remove-Keys {
+        
+    #These are the registry keys that it will delete.
+            
+    $Keys = @(
+            
+        #Remove Background Tasks
+        "HKCR:\Extensions\ContractId\Windows.BackgroundTasks\PackageId\46928bounde.EclipseManager_2.2.4.51_neutral__a5h4egax66k6y"
+        "HKCR:\Extensions\ContractId\Windows.BackgroundTasks\PackageId\ActiproSoftwareLLC.562882FEEB491_2.6.18.18_neutral__24pqs290vpjk0"
+        "HKCR:\Extensions\ContractId\Windows.BackgroundTasks\PackageId\Microsoft.MicrosoftOfficeHub_17.7909.7600.0_x64__8wekyb3d8bbwe"
+        "HKCR:\Extensions\ContractId\Windows.BackgroundTasks\PackageId\Microsoft.PPIProjection_10.0.15063.0_neutral_neutral_cw5n1h2txyewy"
+        "HKCR:\Extensions\ContractId\Windows.BackgroundTasks\PackageId\Microsoft.XboxGameCallableUI_1000.15063.0.0_neutral_neutral_cw5n1h2txyewy"
+        "HKCR:\Extensions\ContractId\Windows.BackgroundTasks\PackageId\Microsoft.XboxGameCallableUI_1000.16299.15.0_neutral_neutral_cw5n1h2txyewy"
+            
+        #Windows File
+        "HKCR:\Extensions\ContractId\Windows.File\PackageId\ActiproSoftwareLLC.562882FEEB491_2.6.18.18_neutral__24pqs290vpjk0"
+            
+        #Registry keys to delete if they aren't uninstalled by RemoveAppXPackage/RemoveAppXProvisionedPackage
+        "HKCR:\Extensions\ContractId\Windows.Launch\PackageId\46928bounde.EclipseManager_2.2.4.51_neutral__a5h4egax66k6y"
+        "HKCR:\Extensions\ContractId\Windows.Launch\PackageId\ActiproSoftwareLLC.562882FEEB491_2.6.18.18_neutral__24pqs290vpjk0"
+        "HKCR:\Extensions\ContractId\Windows.Launch\PackageId\Microsoft.PPIProjection_10.0.15063.0_neutral_neutral_cw5n1h2txyewy"
+        "HKCR:\Extensions\ContractId\Windows.Launch\PackageId\Microsoft.XboxGameCallableUI_1000.15063.0.0_neutral_neutral_cw5n1h2txyewy"
+        "HKCR:\Extensions\ContractId\Windows.Launch\PackageId\Microsoft.XboxGameCallableUI_1000.16299.15.0_neutral_neutral_cw5n1h2txyewy"
+            
+        #Scheduled Tasks to delete
+        "HKCR:\Extensions\ContractId\Windows.PreInstalledConfigTask\PackageId\Microsoft.MicrosoftOfficeHub_17.7909.7600.0_x64__8wekyb3d8bbwe"
+            
+        #Windows Protocol Keys
+        "HKCR:\Extensions\ContractId\Windows.Protocol\PackageId\ActiproSoftwareLLC.562882FEEB491_2.6.18.18_neutral__24pqs290vpjk0"
+        "HKCR:\Extensions\ContractId\Windows.Protocol\PackageId\Microsoft.PPIProjection_10.0.15063.0_neutral_neutral_cw5n1h2txyewy"
+        "HKCR:\Extensions\ContractId\Windows.Protocol\PackageId\Microsoft.XboxGameCallableUI_1000.15063.0.0_neutral_neutral_cw5n1h2txyewy"
+        "HKCR:\Extensions\ContractId\Windows.Protocol\PackageId\Microsoft.XboxGameCallableUI_1000.16299.15.0_neutral_neutral_cw5n1h2txyewy"
+               
+        #Windows Share Target
+        "HKCR:\Extensions\ContractId\Windows.ShareTarget\PackageId\ActiproSoftwareLLC.562882FEEB491_2.6.18.18_neutral__24pqs290vpjk0"
+    )
+        
+    #This writes the output of each key it is removing and also removes the keys listed above.
+    ForEach ($Key in $Keys) {
+        Write-Output "Removing $Key from registry"
+        Remove-Item $Key -Recurse
+    }
+}
+            
+Function Protect-Privacy {
+            
+    #Disables Windows Feedback Experience
+    Write-Output "Disabling Windows Feedback Experience program"
+    $Advertising = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\AdvertisingInfo"
+    If (Test-Path $Advertising) {
+        Set-ItemProperty $Advertising Enabled -Value 0 
+    }
+            
+    #Stops Cortana from being used as part of your Windows Search Function
+    Write-Output "Stopping Cortana from being used as part of your Windows Search Function"
+    $Search = "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search"
+    If (Test-Path $Search) {
+        Set-ItemProperty $Search AllowCortana -Value 0 
+    }
+
+    #Disables Web Search in Start Menu
+    Write-Output "Disabling Bing Search in Start Menu"
+    $WebSearch = "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search"
+    Set-ItemProperty "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Search" BingSearchEnabled -Value 0 
+    If (!(Test-Path $WebSearch)) {
+        New-Item $WebSearch
+    }
+    Set-ItemProperty $WebSearch DisableWebSearch -Value 1 
+            
+    #Stops the Windows Feedback Experience from sending anonymous data
+    Write-Output "Stopping the Windows Feedback Experience program"
+    $Period = "HKCU:\Software\Microsoft\Siuf\Rules"
+    If (!(Test-Path $Period)) { 
+        New-Item $Period
+    }
+    Set-ItemProperty $Period PeriodInNanoSeconds -Value 0 
+
+    #Prevents bloatware applications from returning and removes Start Menu suggestions               
+    Write-Output "Adding Registry key to prevent bloatware apps from returning"
+    $registryPath = "HKLM:\SOFTWARE\Policies\Microsoft\Windows\CloudContent"
+    $registryOEM = "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager"
+    If (!(Test-Path $registryPath)) { 
+        New-Item $registryPath
+    }
+    Set-ItemProperty $registryPath DisableWindowsConsumerFeatures -Value 1 
+
+    If (!(Test-Path $registryOEM)) {
+        New-Item $registryOEM
+    }
+    Set-ItemProperty $registryOEM  ContentDeliveryAllowed -Value 0 
+    Set-ItemProperty $registryOEM  OemPreInstalledAppsEnabled -Value 0 
+    Set-ItemProperty $registryOEM  PreInstalledAppsEnabled -Value 0 
+    Set-ItemProperty $registryOEM  PreInstalledAppsEverEnabled -Value 0 
+    Set-ItemProperty $registryOEM  SilentInstalledAppsEnabled -Value 0 
+    Set-ItemProperty $registryOEM  SystemPaneSuggestionsEnabled -Value 0          
+    
+    #Preping mixed Reality Portal for removal    
+    Write-Output "Setting Mixed Reality Portal value to 0 so that you can uninstall it in Settings"
+    $Holo = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Holographic"    
+    If (Test-Path $Holo) {
+        Set-ItemProperty $Holo  FirstRunSucceeded -Value 0 
+    }
+
+    #Disables Wi-fi Sense
+    Write-Output "Disabling Wi-Fi Sense"
+    $WifiSense1 = "HKLM:\SOFTWARE\Microsoft\PolicyManager\default\WiFi\AllowWiFiHotSpotReporting"
+    $WifiSense2 = "HKLM:\SOFTWARE\Microsoft\PolicyManager\default\WiFi\AllowAutoConnectToWiFiSenseHotspots"
+    $WifiSense3 = "HKLM:\SOFTWARE\Microsoft\WcmSvc\wifinetworkmanager\config"
+    If (!(Test-Path $WifiSense1)) {
+        New-Item $WifiSense1
+    }
+    Set-ItemProperty $WifiSense1  Value -Value 0 
+    If (!(Test-Path $WifiSense2)) {
+        New-Item $WifiSense2
+    }
+    Set-ItemProperty $WifiSense2  Value -Value 0 
+    Set-ItemProperty $WifiSense3  AutoConnectAllowedOEM -Value 0 
+        
+    #Disables live tiles
+    Write-Output "Disabling live tiles"
+    $Live = "HKCU:\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\PushNotifications"    
+    If (!(Test-Path $Live)) {      
+        New-Item $Live
+    }
+    Set-ItemProperty $Live  NoTileApplicationNotification -Value 1 
+        
+    #Turns off Data Collection via the AllowTelemtry key by changing it to 0
+    Write-Output "Turning off Data Collection"
+    $DataCollection1 = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\DataCollection"
+    $DataCollection2 = "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DataCollection"
+    $DataCollection3 = "HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Policies\DataCollection"    
+    If (Test-Path $DataCollection1) {
+        Set-ItemProperty $DataCollection1  AllowTelemetry -Value 0 
+    }
+    If (Test-Path $DataCollection2) {
+        Set-ItemProperty $DataCollection2  AllowTelemetry -Value 0 
+    }
+    If (Test-Path $DataCollection3) {
+        Set-ItemProperty $DataCollection3  AllowTelemetry -Value 0 
+    }
+    
+    #Disabling Location Tracking
+    Write-Output "Disabling Location Tracking"
+    $SensorState = "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Sensor\Overrides\{BFA794E4-F964-4FDB-90F6-51056BFE4B44}"
+    $LocationConfig = "HKLM:\SYSTEM\CurrentControlSet\Services\lfsvc\Service\Configuration"
+    If (!(Test-Path $SensorState)) {
+        New-Item $SensorState
+    }
+    Set-ItemProperty $SensorState SensorPermissionState -Value 0 
+    If (!(Test-Path $LocationConfig)) {
+        New-Item $LocationConfig
+    }
+    Set-ItemProperty $LocationConfig Status -Value 0 
+        
+    #Disables People icon on Taskbar
+    Write-Output "Disabling People icon on Taskbar"
+    $People = 'HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced\People'
+    If (Test-Path $People) {
+        Set-ItemProperty $People -Name PeopleBand -Value 0
+    }
+        
+    #Disables scheduled tasks that are considered unnecessary 
+    Write-Output "Disabling scheduled tasks"
+    Get-ScheduledTask  XblGameSaveTaskLogon | Disable-ScheduledTask
+    Get-ScheduledTask  XblGameSaveTask | Disable-ScheduledTask
+    Get-ScheduledTask  Consolidator | Disable-ScheduledTask
+    Get-ScheduledTask  UsbCeip | Disable-ScheduledTask
+    Get-ScheduledTask  DmClient | Disable-ScheduledTask
+    Get-ScheduledTask  DmClientOnScenarioDownload | Disable-ScheduledTask
+
+    Write-Output "Stopping and disabling Diagnostics Tracking Service"
+    #Disabling the Diagnostics Tracking Service
+    Stop-Service "DiagTrack"
+    Set-Service "DiagTrack" -StartupType Disabled
+
+    
+    Write-Output "Removing CloudStore from registry if it exists"
+    $CloudStore = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\CloudStore'
+    If (Test-Path $CloudStore) {
+        Stop-Process Explorer.exe -Force
+        Remove-Item $CloudStore -Recurse -Force
+        Start-Process Explorer.exe -Wait
+    }
+}
+
+Function DisableCortana {
+    Write-Host "Disabling Cortana"
+    $Cortana1 = "HKCU:\SOFTWARE\Microsoft\Personalization\Settings"
+    $Cortana2 = "HKCU:\SOFTWARE\Microsoft\InputPersonalization"
+    $Cortana3 = "HKCU:\SOFTWARE\Microsoft\InputPersonalization\TrainedDataStore"
+    If (!(Test-Path $Cortana1)) {
+        New-Item $Cortana1
+    }
+    Set-ItemProperty $Cortana1 AcceptedPrivacyPolicy -Value 0 
+    If (!(Test-Path $Cortana2)) {
+        New-Item $Cortana2
+    }
+    Set-ItemProperty $Cortana2 RestrictImplicitTextCollection -Value 1 
+    Set-ItemProperty $Cortana2 RestrictImplicitInkCollection -Value 1 
+    If (!(Test-Path $Cortana3)) {
+        New-Item $Cortana3
+    }
+    Set-ItemProperty $Cortana3 HarvestContacts -Value 0
+    
+}
+
+Function EnableCortana {
+    Write-Host "Re-enabling Cortana"
+    $Cortana1 = "HKCU:\SOFTWARE\Microsoft\Personalization\Settings"
+    $Cortana2 = "HKCU:\SOFTWARE\Microsoft\InputPersonalization"
+    $Cortana3 = "HKCU:\SOFTWARE\Microsoft\InputPersonalization\TrainedDataStore"
+    If (!(Test-Path $Cortana1)) {
+        New-Item $Cortana1
+    }
+    Set-ItemProperty $Cortana1 AcceptedPrivacyPolicy -Value 1 
+    If (!(Test-Path $Cortana2)) {
+        New-Item $Cortana2
+    }
+    Set-ItemProperty $Cortana2 RestrictImplicitTextCollection -Value 0 
+    Set-ItemProperty $Cortana2 RestrictImplicitInkCollection -Value 0 
+    If (!(Test-Path $Cortana3)) {
+        New-Item $Cortana3
+    }
+    Set-ItemProperty $Cortana3 HarvestContacts -Value 1 
+}
+        
+Function Stop-EdgePDF {
+    
+    #Stops edge from taking over as the default .PDF viewer    
+    Write-Output "Stopping Edge from taking over as the default .PDF viewer"
+    $NoPDF = "HKCR:\.pdf"
+    $NoProgids = "HKCR:\.pdf\OpenWithProgids"
+    $NoWithList = "HKCR:\.pdf\OpenWithList" 
+    If (!(Get-ItemProperty $NoPDF  NoOpenWith)) {
+        New-ItemProperty $NoPDF NoOpenWith 
+    }        
+    If (!(Get-ItemProperty $NoPDF  NoStaticDefaultVerb)) {
+        New-ItemProperty $NoPDF  NoStaticDefaultVerb 
+    }        
+    If (!(Get-ItemProperty $NoProgids  NoOpenWith)) {
+        New-ItemProperty $NoProgids  NoOpenWith 
+    }        
+    If (!(Get-ItemProperty $NoProgids  NoStaticDefaultVerb)) {
+        New-ItemProperty $NoProgids  NoStaticDefaultVerb 
+    }        
+    If (!(Get-ItemProperty $NoWithList  NoOpenWith)) {
+        New-ItemProperty $NoWithList  NoOpenWith
+    }        
+    If (!(Get-ItemProperty $NoWithList  NoStaticDefaultVerb)) {
+        New-ItemProperty $NoWithList  NoStaticDefaultVerb 
+    }
+            
+    #Appends an underscore '_' to the Registry key for Edge
+    $Edge = "HKCR:\AppXd4nrz8ff68srnhf9t5a8sbjyar1cr723_"
+    If (Test-Path $Edge) {
+        Set-Item $Edge AppXd4nrz8ff68srnhf9t5a8sbjyar1cr723_ 
+    }
+}
+
+Function Revert-Changes {   
+        
+    #This function will revert the changes you made when running the Start-Debloat function.
+        
+    #This line reinstalls all of the bloatware that was removed
+    Get-AppxPackage -AllUsers | ForEach {Add-AppxPackage -Verbose -DisableDevelopmentMode -Register "$($_.InstallLocation)\AppXManifest.xml"} 
+    
+    #Tells Windows to enable your advertising information.    
+    Write-Output "Re-enabling key to show advertisement information"
+    $Advertising = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\AdvertisingInfo"
+    If (Test-Path $Advertising) {
+        Set-ItemProperty $Advertising  Enabled -Value 1
+    }
+            
+    #Enables Cortana to be used as part of your Windows Search Function
+    Write-Output "Re-enabling Cortana to be used in your Windows Search"
+    $Search = "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search"
+    If (Test-Path $Search) {
+        Set-ItemProperty $Search  AllowCortana -Value 1 
+    }
+            
+    #Re-enables the Windows Feedback Experience for sending anonymous data
+    Write-Output "Re-enabling Windows Feedback Experience"
+    $Period = "HKCU:\Software\Microsoft\Siuf\Rules"
+    If (!(Test-Path $Period)) { 
+        New-Item $Period
+    }
+    Set-ItemProperty $Period PeriodInNanoSeconds -Value 1 
+    
+    #Enables bloatware applications               
+    Write-Output "Adding Registry key to allow bloatware apps to return"
+    $registryPath = "HKLM:\SOFTWARE\Policies\Microsoft\Windows\CloudContent"
+    If (!(Test-Path $registryPath)) {
+        New-Item $registryPath 
+    }
+    Set-ItemProperty $registryPath  DisableWindowsConsumerFeatures -Value 0 
+        
+    #Changes Mixed Reality Portal Key 'FirstRunSucceeded' to 1
+    Write-Output "Setting Mixed Reality Portal value to 1"
+    $Holo = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Holographic"
+    If (Test-Path $Holo) {
+        Set-ItemProperty $Holo  FirstRunSucceeded -Value 1 
+    }
+        
+    #Re-enables live tiles
+    Write-Output "Enabling live tiles"
+    $Live = "HKCU:\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\PushNotifications"
+    If (!(Test-Path $Live)) {
+        New-Item $Live 
+    }
+    Set-ItemProperty $Live  NoTileApplicationNotification -Value 0 
+       
+    #Re-enables data collection
+    Write-Output "Re-enabling data collection"
+    $DataCollection = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\DataCollection"
+    If (!(Test-Path $DataCollection)) {
+        New-Item $DataCollection
+    }
+    Set-ItemProperty $DataCollection  AllowTelemetry -Value 1
+        
+    #Re-enables People Icon on Taskbar
+    Write-Output "Enabling People icon on Taskbar"
+    $People = "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced\People"
+    If (!(Test-Path $People)) {
+        New-Item $People 
+    }
+    Set-ItemProperty $People  PeopleBand -Value 1 
+    
+    #Re-enables suggestions on start menu
+    Write-Output "Enabling suggestions on the Start Menu"
+    $Suggestions = "HKCU:\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager"
+    If (!(Test-Path $Suggestions)) {
+        New-Item $Suggestions
+    }
+    Set-ItemProperty $Suggestions  SystemPaneSuggestionsEnabled -Value 1 
+        
+    #Re-enables scheduled tasks that were disabled when running the Debloat switch
+    Write-Output "Enabling scheduled tasks that were disabled"
+    Get-ScheduledTask XblGameSaveTaskLogon | Enable-ScheduledTask 
+    Get-ScheduledTask  XblGameSaveTask | Enable-ScheduledTask 
+    Get-ScheduledTask  Consolidator | Enable-ScheduledTask 
+    Get-ScheduledTask  UsbCeip | Enable-ScheduledTask 
+    Get-ScheduledTask  DmClient | Enable-ScheduledTask 
+    Get-ScheduledTask  DmClientOnScenarioDownload | Enable-ScheduledTask 
+
+    Write-Output "Re-enabling and starting WAP Push Service"
+    #Enable and start WAP Push Service
+    Set-Service "dmwappushservice" -StartupType Automatic
+    Start-Service "dmwappushservice"
+    
+    Write-Output "Re-enabling and starting the Diagnostics Tracking Service"
+    #Enabling the Diagnostics Tracking Service
+    Set-Service "DiagTrack" -StartupType Automatic
+    Start-Service "DiagTrack"
+    
+    Write-Output "Restoring 3D Objects in the 'My Computer' submenu in explorer"
+    #Restoring 3D Objects in the 'My Computer' submenu in explorer
+    Restore3dObjects
+}
+
+Function CheckDMWService {
+
+    Param([switch]$Debloat)
+  
+    If (Get-Service -Name dmwappushservice | Where-Object {$_.StartType -eq "Disabled"}) {
+        Set-Service -Name dmwappushservice -StartupType Automatic
+    }
+
+    If (Get-Service -Name dmwappushservice | Where-Object {$_.Status -eq "Stopped"}) {
+        Start-Service -Name dmwappushservice
+    } 
+}
+    
+Function Enable-EdgePDF {
+    Write-Output "Setting Edge back to default"
+    $NoPDF = "HKCR:\.pdf"
+    $NoProgids = "HKCR:\.pdf\OpenWithProgids"
+    $NoWithList = "HKCR:\.pdf\OpenWithList"
+    #Sets edge back to default
+    If (Get-ItemProperty $NoPDF  NoOpenWith) {
+        Remove-ItemProperty $NoPDF  NoOpenWith
+    } 
+    If (Get-ItemProperty $NoPDF  NoStaticDefaultVerb) {
+        Remove-ItemProperty $NoPDF  NoStaticDefaultVerb 
+    }       
+    If (Get-ItemProperty $NoProgids  NoOpenWith) {
+        Remove-ItemProperty $NoProgids  NoOpenWith 
+    }        
+    If (Get-ItemProperty $NoProgids  NoStaticDefaultVerb) {
+        Remove-ItemProperty $NoProgids  NoStaticDefaultVerb 
+    }        
+    If (Get-ItemProperty $NoWithList  NoOpenWith) {
+        Remove-ItemProperty $NoWithList  NoOpenWith
+    }    
+    If (Get-ItemProperty $NoWithList  NoStaticDefaultVerb) {
+        Remove-ItemProperty $NoWithList  NoStaticDefaultVerb
+    }
+        
+    #Removes an underscore '_' from the Registry key for Edge
+    $Edge2 = "HKCR:\AppXd4nrz8ff68srnhf9t5a8sbjyar1cr723_"
+    If (Test-Path $Edge2) {
+        Set-Item $Edge2 AppXd4nrz8ff68srnhf9t5a8sbjyar1cr723
+    }
+}
+
+Function FixWhitelistedApps {
+    
+    If (!(Get-AppxPackage -AllUsers | Select Microsoft.Paint3D, Microsoft.WindowsCalculator, Microsoft.WindowsStore, Microsoft.Windows.Photos)) {
+    
+        #Credit to abulgatz for these 4 lines of code
+        Get-AppxPackage -allusers Microsoft.Paint3D | Foreach {Add-AppxPackage -DisableDevelopmentMode -Register "$($_.InstallLocation)\AppXManifest.xml"}
+        Get-AppxPackage -allusers Microsoft.WindowsCalculator | Foreach {Add-AppxPackage -DisableDevelopmentMode -Register "$($_.InstallLocation)\AppXManifest.xml"}
+        Get-AppxPackage -allusers Microsoft.WindowsStore | Foreach {Add-AppxPackage -DisableDevelopmentMode -Register "$($_.InstallLocation)\AppXManifest.xml"}
+        Get-AppxPackage -allusers Microsoft.Windows.Photos | Foreach {Add-AppxPackage -DisableDevelopmentMode -Register "$($_.InstallLocation)\AppXManifest.xml"} 
+    } 
+}
+
+Function UninstallOneDrive {
+
+    Write-Host "Checking for pre-existing files and folders located in the OneDrive folders..."
+    Start-Sleep 1
+    If (Test-Path "$env:USERPROFILE\OneDrive\*") {
+        Write-Host "Files found within the OneDrive folder! Checking to see if a folder named OneDriveBackupFiles exists."
+        Start-Sleep 1
+              
+        If (Test-Path "$env:USERPROFILE\Desktop\OneDriveBackupFiles") {
+            Write-Host "A folder named OneDriveBackupFiles already exists on your desktop. All files from your OneDrive location will be moved to that folder." 
+        }
+        else {
+            If (!(Test-Path "$env:USERPROFILE\Desktop\OneDriveBackupFiles")) {
+                Write-Host "A folder named OneDriveBackupFiles will be created and will be located on your desktop. All files from your OneDrive location will be located in that folder."
+                New-item -Path "$env:USERPROFILE\Desktop" -Name "OneDriveBackupFiles"-ItemType Directory -Force
+                Write-Host "Successfully created the folder 'OneDriveBackupFiles' on your desktop."
+            }
+        }
+        Start-Sleep 1
+        Move-Item -Path "$env:USERPROFILE\OneDrive\*" -Destination "$env:USERPROFILE\Desktop\OneDriveBackupFiles" -Force
+        Write-Host "Successfully moved all files/folders from your OneDrive folder to the folder 'OneDriveBackupFiles' on your desktop."
+        Start-Sleep 1
+        Write-Host "Proceeding with the removal of OneDrive."
+        Start-Sleep 1
+    }
+    Else {
+        Write-Host "Either the OneDrive folder does not exist or there are no files to be found in the folder. Proceeding with removal of OneDrive."
+        Start-Sleep 1
+        Write-Host "Enabling the Group Policy 'Prevent the usage of OneDrive for File Storage'."
+        $OneDriveKey = 'HKLM:Software\Policies\Microsoft\Windows\OneDrive'
+        If (!(Test-Path $OneDriveKey)) {
+            Mkdir $OneDriveKey
+            Set-ItemProperty $OneDriveKey -Name OneDrive -Value DisableFileSyncNGSC
+        }
+        Set-ItemProperty $OneDriveKey -Name OneDrive -Value DisableFileSyncNGSC
+    }
+
+    Write-Host "Uninstalling OneDrive. Please wait..."
+    
+
+    New-PSDrive  HKCR -PSProvider Registry -Root HKEY_CLASSES_ROOT
+    $onedrive = "$env:SYSTEMROOT\SysWOW64\OneDriveSetup.exe"
+    $ExplorerReg1 = "HKCR:\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}"
+    $ExplorerReg2 = "HKCR:\Wow6432Node\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}"
+    Stop-Process -Name "OneDrive*"
+    Start-Sleep 2
+    If (!(Test-Path $onedrive)) {
+        $onedrive = "$env:SYSTEMROOT\System32\OneDriveSetup.exe"
+
+        New-PSDrive  HKCR -PSProvider Registry -Root HKEY_CLASSES_ROOT
+        $onedrive = "$env:SYSTEMROOT\SysWOW64\OneDriveSetup.exe"
+        $ExplorerReg1 = "HKCR:\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}"
+        $ExplorerReg2 = "HKCR:\Wow6432Node\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}"
+        Stop-Process -Name "OneDrive*"
+        Start-Sleep 2
+        If (!(Test-Path $onedrive)) {
+            $onedrive = "$env:SYSTEMROOT\System32\OneDriveSetup.exe"
+        }
+        Start-Process $onedrive "/uninstall" -NoNewWindow -Wait
+        Start-Sleep 2
+        Write-Output "Stopping explorer"
+        Start-Sleep 1
+        taskkill.exe /F /IM explorer.exe
+        Start-Sleep 3
+        Write-Output "Removing leftover files"
+        Remove-Item "$env:USERPROFILE\OneDrive" -Force -Recurse
+        Remove-Item "$env:LOCALAPPDATA\Microsoft\OneDrive" -Force -Recurse
+        Remove-Item "$env:PROGRAMDATA\Microsoft OneDrive" -Force -Recurse
+        If (Test-Path "$env:SYSTEMDRIVE\OneDriveTemp") {
+            Remove-Item "$env:SYSTEMDRIVE\OneDriveTemp" -Force -Recurse
+        }
+        Write-Output "Removing OneDrive from windows explorer"
+        If (!(Test-Path $ExplorerReg1)) {
+            New-Item $ExplorerReg1
+        }
+        Set-ItemProperty $ExplorerReg1 System.IsPinnedToNameSpaceTree -Value 0 
+        If (!(Test-Path $ExplorerReg2)) {
+            New-Item $ExplorerReg2
+        }
+        Set-ItemProperty $ExplorerReg2 System.IsPinnedToNameSpaceTree -Value 0
+        Write-Output "Restarting Explorer that was shut down before."
+        Start-Process explorer.exe -NoNewWindow
+    
+        Write-Host "Enabling the Group Policy 'Prevent the usage of OneDrive for File Storage'."
+        $OneDriveKey = 'HKLM:Software\Policies\Microsoft\Windows\OneDrive'
+        If (!(Test-Path $OneDriveKey)) {
+            Mkdir $OneDriveKey 
+        }
+        Start-Process $onedrive "/uninstall" -NoNewWindow -Wait
+        Start-Sleep 2
+        Write-Host "Stopping explorer"
+        Start-Sleep 1
+        taskkill.exe /F /IM explorer.exe
+        Start-Sleep 3
+        Write-Host "Removing leftover files"
+        If (Test-Path "$env:USERPROFILE\OneDrive") {
+            Remove-Item "$env:USERPROFILE\OneDrive" -Force -Recurse
+        }
+        If (Test-Path "$env:LOCALAPPDATA\Microsoft\OneDrive") {
+            Remove-Item "$env:LOCALAPPDATA\Microsoft\OneDrive" -Force -Recurse
+        }
+        If (Test-Path "$env:PROGRAMDATA\Microsoft OneDrive") {
+            Remove-Item "$env:PROGRAMDATA\Microsoft OneDrive" -Force -Recurse
+        }
+        If (Test-Path "$env:SYSTEMDRIVE\OneDriveTemp") {
+            Remove-Item "$env:SYSTEMDRIVE\OneDriveTemp" -Force -Recurse
+        }
+        Write-Host "Removing OneDrive from windows explorer"
+        If (!(Test-Path $ExplorerReg1)) {
+            New-Item $ExplorerReg1
+        }
+        Set-ItemProperty $ExplorerReg1 System.IsPinnedToNameSpaceTree -Value 0 
+        If (!(Test-Path $ExplorerReg2)) {
+            New-Item $ExplorerReg2
+        }
+        Set-ItemProperty $ExplorerReg2 System.IsPinnedToNameSpaceTree -Value 0
+        Write-Host "Restarting Explorer that was shut down before."
+        Start-Process explorer.exe -NoNewWindow
+        Write-Host "OneDrive has been successfully uninstalled!"
+        
+        Remove-item env:OneDrive
+    }
+}
+
+Function UnpinStart {
+    #https://superuser.com/questions/1068382/how-to-remove-all-the-tiles-in-the-windows-10-start-menu
+    #Unpins all tiles from the Start Menu
+    Write-Host "Unpinning all tiles from the start menu"
+    (New-Object -Com Shell.Application).
+    NameSpace('shell:::{4234d49b-0245-4df3-b780-3893943456e1}').
+    Items() |
+        % { $_.Verbs() } |
+        ? {$_.Name -match 'Un.*pin from Start'} |
+        % {$_.DoIt()}
+}
+
+Function Remove3dObjects {
+    #Removes 3D Objects from the 'My Computer' submenu in explorer
+    Write-Host "Removing 3D Objects from explorer 'My Computer' submenu"
+    $Objects32 = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{0DB7E03F-FC29-4DC6-9020-FF41B59E513A}"
+    $Objects64 = "HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{0DB7E03F-FC29-4DC6-9020-FF41B59E513A}"
+    If (Test-Path $Objects32) {
+        Remove-Item $Objects32 -Recurse 
+    }
+    If (Test-Path $Objects64) {
+        Remove-Item $Objects64 -Recurse 
+    }
+}
+
+Function Restore3dObjects {
+    #Restores 3D Objects from the 'My Computer' submenu in explorer
+    Write-Host "Restoring 3D Objects from explorer 'My Computer' submenu"
+    $Objects32 = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{0DB7E03F-FC29-4DC6-9020-FF41B59E513A}"
+    $Objects64 = "HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{0DB7E03F-FC29-4DC6-9020-FF41B59E513A}"
+    If (!(Test-Path $Objects32)) {
+        New-Item $Objects32
+    }
+    If (!(Test-Path $Objects64)) {
+        New-Item $Objects64
+    }
+}
+
+#Interactive prompt Debloat/Revert options
+$Button = [Windows.MessageBoxButton]::YesNoCancel
+$ErrorIco = [Windows.MessageBoxImage]::Error
+$Warn = [Windows.MessageBoxImage]::Warning
+$Ask = 'The following will allow you to either Debloat Windows 10 or to revert changes made after Debloating Windows 10.
+
+        Select "Yes" to Debloat Windows 10
+
+        Select "No" to Revert changes made by this script
+        
+        Select "Cancel" to stop the script.'
+
+$EverythingorSpecific = "Would you like to remove everything that was preinstalled on your Windows Machine? Select Yes to remove everything, or select No to remove apps via a blacklist."
+$EdgePdf = "Do you want to stop edge from taking over as the default PDF viewer?"
+$EdgePdf2 = "Do you want to revert changes that disabled Edge as the default PDF viewer?"
+$Reboot = "For some of the changes to properly take effect it is recommended to reboot your machine. Would you like to restart?"
+$OneDriveDelete = "Do you want to uninstall One Drive?"
+$Unpin = "Do you want to unpin all items from the Start menu?"
+$InstallNET = "Do you want to install .NET 3.5?"
+$Prompt1 = [Windows.MessageBox]::Show($Ask, "Debloat or Revert", $Button, $ErrorIco) 
+Switch ($Prompt1) {
+    #This will debloat Windows 10
+    Yes {
+        #Everything is specific prompt
+        $Prompt2 = [Windows.MessageBox]::Show($EverythingorSpecific, "Everything or Specific", $Button, $Warn)
+        switch ($Prompt2) {
+            Yes { 
+                #Creates a "drive" to access the HKCR (HKEY_CLASSES_ROOT)
+                Write-Host "Creating PSDrive 'HKCR' (HKEY_CLASSES_ROOT). This will be used for the duration of the script as it is necessary for the removal and modification of specific registry keys."
+                New-PSDrive  HKCR -PSProvider Registry -Root HKEY_CLASSES_ROOT
+                Start-Sleep 1
+                Write-Host "Uninstalling bloatware, please wait."
+                DebloatAll
+                Write-Host "Bloatware removed."
+                Start-Sleep 1
+                Write-Host "Removing specific registry keys."
+                Remove-Keys
+                Write-Host "Leftover bloatware registry keys removed."
+                Start-Sleep 1
+                Write-Host "Checking to see if any Whitelisted Apps were removed, and if so re-adding them."
+                Start-Sleep 1
+                FixWhitelistedApps
+                Start-Sleep 1
+                Write-Host "Disabling Cortana from search, disabling feedback to Microsoft, and disabling scheduled tasks that are considered to be telemetry or unnecessary."
+                Protect-Privacy
+                Start-Sleep 1
+                DisableCortana
+                Write-Host "Cortana disabled and removed from search, feedback to Microsoft has been disabled, and scheduled tasks are disabled."
+                Start-Sleep 1
+                Write-Host "Stopping and disabling Diagnostics Tracking Service"
+                DisableDiagTrack
+                Write-Host "Diagnostics Tracking Service disabled"
+                Start-Sleep 1
+                Write-Host "Disabling WAP push service"
+                DisableWAPPush
+                Start-Sleep 1
+                Write-Host "Re-enabling DMWAppushservice if it was disabled"
+                CheckDMWService
+                Start-Sleep 1
+                Write-Host "Removing 3D Objects from the 'My Computer' submenu in explorer"
+                Remove3dObjects
+                Start-Sleep 1
+            }
+            No {
+                #Creates a "drive" to access the HKCR (HKEY_CLASSES_ROOT)
+                Write-Host "Creating PSDrive 'HKCR' (HKEY_CLASSES_ROOT). This will be used for the duration of the script as it is necessary for the removal and modification of specific registry keys."
+                New-PSDrive  HKCR -PSProvider Registry -Root HKEY_CLASSES_ROOT
+                Start-Sleep 1
+                Write-Host "Uninstalling bloatware, please wait."
+                DebloatBlacklist
+                Write-Host "Bloatware removed."
+                Start-Sleep 1
+                Write-Host "Removing specific registry keys."
+                Remove-Keys
+                Write-Host "Leftover bloatware registry keys removed."
+                Start-Sleep 1
+                Write-Host "Checking to see if any Whitelisted Apps were removed, and if so re-adding them."
+                Start-Sleep 1
+                FixWhitelistedApps
+                Start-Sleep 1
+                Write-Host "Disabling Cortana from search, disabling feedback to Microsoft, and disabling scheduled tasks that are considered to be telemetry or unnecessary."
+                Protect-Privacy
+                Start-Sleep 1
+                DisableCortana
+                Write-Host "Cortana disabled and removed from search, feedback to Microsoft has been disabled, and scheduled tasks are disabled."
+                Start-Sleep 1
+                Write-Host "Stopping and disabling Diagnostics Tracking Service"
+                DisableDiagTrack
+                Write-Host "Diagnostics Tracking Service disabled"
+                Start-Sleep 1
+                Write-Host "Disabling WAP push service"
+                Start-Sleep 1
+                DisableWAPPush
+                Write-Host "Re-enabling DMWAppushservice if it was disabled"
+                CheckDMWService
+                Start-Sleep 1
+            }
+        }
+        #Disabling EdgePDF prompt
+        $Prompt3 = [Windows.MessageBox]::Show($EdgePdf, "Edge PDF", $Button, $Warn)
+        Switch ($Prompt3) {
+            Yes {
+                Stop-EdgePDF
+                Write-Host "Edge will no longer take over as the default PDF viewer."
+            }
+            No {
+                Write-Host "You chose not to stop Edge from taking over as the default PDF viewer."
+            }
+        }
+        #Prompt asking to delete OneDrive
+        $Prompt4 = [Windows.MessageBox]::Show($OneDriveDelete, "Delete OneDrive", $Button, $ErrorIco) 
+        Switch ($Prompt4) {
+            Yes {
+                UninstallOneDrive
+                Write-Host "OneDrive is now removed from the computer."
+            }
+            No {
+                Write-Host "You have chosen to skip removing OneDrive from your machine."
+            }
+        }
+        #Prompt asking if you'd like to unpin all start items
+        $Prompt5 = [Windows.MessageBox]::Show($Unpin, "Unpin", $Button, $ErrorIco) 
+        Switch ($Prompt5) {
+            Yes {
+                UnpinStart
+                Write-Host "Start Apps unpined."
+            }
+            No {
+                Write-Host "Apps will remain pinned to the start menu."
+
+            }
+        }
+        #Prompt asking if you want to install .NET
+        $Prompt6 = [Windows.MessageBox]::Show($InstallNET, "Install .Net", $Button, $Warn)
+        Switch ($Prompt6) {
+            Yes {
+                Write-Host "Initializing the installation of .NET 3.5..."
+                DISM /Online /Enable-Feature /FeatureName:NetFx3 /All
+                Write-Host ".NET 3.5 has been successfully installed!"
+            }
+            No {
+                Write-Host "Skipping .NET install."
+            }
+        }
+        #Prompt asking if you'd like to reboot your machine
+        $Prompt7 = [Windows.MessageBox]::Show($Reboot, "Reboot", $Button, $Warn)
+        Switch ($Prompt7) {
+            Yes {
+                Write-Host "Unloading the HKCR drive..."
+                Remove-PSDrive HKCR 
+                Start-Sleep 1
+                Write-Host "Initiating reboot."
+                Stop-Transcript
+                Start-Sleep 2
+                Restart-Computer
+            }
+            No {
+                Write-Host "Unloading the HKCR drive..."
+                Remove-PSDrive HKCR 
+                Start-Sleep 1
+                Write-Host "Script has finished. Exiting."
+                Stop-Transcript
+                Start-Sleep 2
+                Exit
+            }
+        }
+    }
+    No {
+        Write-Host "Reverting changes..."
+        Write-Host "Creating PSDrive 'HKCR' (HKEY_CLASSES_ROOT). This will be used for the duration of the script as it is necessary for the modification of specific registry keys."
+        New-PSDrive  HKCR -PSProvider Registry -Root HKEY_CLASSES_ROOT
+        Revert-Changes
+        #Prompt asking to revert edge changes as well
+        $Prompt6 = [Windows.MessageBox]::Show($EdgePdf2, "Revert Edge", $Button, $ErrorIco)
+        Switch ($Prompt6) {
+            Yes {
+                Enable-EdgePDF
+                Write-Host "Edge will no longer be disabled from being used as the default Edge PDF viewer."
+            }
+            No {
+                Write-Host "You have chosen to keep the setting that disallows Edge to be the default PDF viewer."
+            }
+        }
+        #Prompt asking if you'd like to reboot your machine
+        $Prompt7 = [Windows.MessageBox]::Show($Reboot, "Reboot", $Button, $Warn)
+        Switch ($Prompt7) {
+            Yes {
+                Write-Host "Unloading the HKCR drive..."
+                Remove-PSDrive HKCR 
+                Start-Sleep 1
+                Write-Host "Initiating reboot."
+                Stop-Transcript
+                Start-Sleep 2
+                Restart-Computer
+            }
+            No {
+                Write-Host "Unloading the HKCR drive..."
+                Remove-PSDrive HKCR 
+                Start-Sleep 1
+                Write-Host "Script has finished. Exiting."
+                Stop-Transcript
+                Start-Sleep 2
+                Exit
+            }
+        }
+    }
+}
